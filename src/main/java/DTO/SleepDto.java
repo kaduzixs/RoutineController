@@ -3,6 +3,7 @@ package DTO;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.time.Duration;
 import java.time.LocalTime;
 @Getter
 @Setter
@@ -17,5 +18,6 @@ public class SleepDto{
         this.hourSleep = hourSleep;
         this.hourWake = hourWake;
     }
+
 
 }

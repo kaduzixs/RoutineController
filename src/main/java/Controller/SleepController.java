@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.time.Duration;
 import java.time.LocalTime;
 
 @RestController
@@ -18,9 +19,10 @@ public class SleepController{
     private SleepService sleepService;
 
     @PostMapping("/sleep")
-    public String sleep(@RequestBody SleepDto dto){
+    public Duration sleep(@RequestBody SleepDto dto){
         LocalTime hourSleep = dto.getHourSleep();
         LocalTime hourWake = dto.getHourWake();
-        return "Hours calculate..";
+        Duration calculateDuration = sleepService.calculateSleep(hourSleep, hourWake);
+        return calculateDuration;
     }
 }

@@ -1,7 +1,11 @@
 package Service;
 
+import org.springframework.stereotype.Service;
+
 import java.time.Duration;
 import java.time.LocalTime;
+
+@Service
 
 public class SleepService {
     public Duration calculateSleep(LocalTime hourSleep, LocalTime hourWake){
@@ -15,13 +19,13 @@ public class SleepService {
     public Qualite calculateQualite(Duration duration){
         long hours = duration.toHours();
 
-        if(hours <=1 && hours >=3){
+        if(hours >=0 && hours <=3){
             return Qualite.RUIM;
         }
-        else if(hours >5 && hours <=7){
+        else if(hours >=4 && hours <=7){
             return Qualite.MEDIO;
         }
-        else if(hours >7 && hours <=10){
+        else if(hours >7 && hours <=10) {
             return Qualite.BOM;
         }
         else
