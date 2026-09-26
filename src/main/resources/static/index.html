@@ -40,11 +40,8 @@
             --black: #070707;
             --black-light: #101010;
             --card: #151515;
-            --card-light: #1d1d1d;
-
             --red: #e50914;
             --red-light: #ff2633;
-
             --white: #f5f5f5;
             --gray: #8b8b8b;
             --border: #292929;
@@ -357,7 +354,7 @@
             background: white;
         }
 
-        /* INPUTS */
+        /* INPUT */
 
         .field input {
             display: block;
@@ -487,6 +484,8 @@
             margin-top: 15px;
 
             text-align: center;
+
+            line-height: 1.5;
 
             overflow-wrap: anywhere;
         }
@@ -1276,6 +1275,8 @@
 
             error.textContent = "";
 
+            result.classList.add("hidden");
+
 
             const hourSleep =
                 document
@@ -1304,20 +1305,31 @@
                 new Date(hourWake);
 
 
-            let difference =
+            /*
+             * Acordou antes ou exatamente
+             * no momento em que dormiu.
+             */
+
+            if (
+                wake.getTime() <=
+                sleep.getTime()
+            ) {
+
+                error.textContent =
+                    "A data e o horário em que você acordou devem ser posteriores ao momento em que dormiu.";
+
+                return;
+            }
+
+
+            /*
+             * Calcula a diferença real
+             * entre as duas datas.
+             */
+
+            const difference =
                 wake.getTime() -
                 sleep.getTime();
-
-
-            if (difference <= 0) {
-
-                difference +=
-                    24 *
-                    60 *
-                    60 *
-                    1000;
-
-            }
 
 
             const totalMinutes =
@@ -1343,6 +1355,10 @@
             );
 
 
+            /*
+             * Envia os dados para o Java.
+             */
+
             try {
 
                 const response =
@@ -1358,21 +1374,33 @@
 
                             body:
                                 JSON.stringify({
+
                                     hourSleep:
                                     hourSleep,
 
                                     hourWake:
                                     hourWake
+
                                 })
                         }
                     );
 
 
+                /*
+                 * O cálculo visual continua funcionando,
+                 * mas mostramos no console se o backend
+                 * rejeitar os dados.
+                 */
+
                 if (!response.ok) {
 
+                    const message =
+                        await response.text();
+
                     console.log(
-                        "O cálculo local funcionou, mas o servidor retornou:",
-                        response.status
+                        "Backend retornou:",
+                        response.status,
+                        message
                     );
 
                 }
@@ -1380,7 +1408,7 @@
             } catch (err) {
 
                 console.log(
-                    "Não foi possível enviar o cálculo ao backend:",
+                    "Erro ao enviar para o backend:",
                     err
                 );
 
@@ -1394,7 +1422,6 @@
         hours,
         minutes
     ) {
-
 
         hoursElement.textContent =
             String(hours)
@@ -1482,17 +1509,13 @@
 
     function newCalculation() {
 
-
         form.reset();
-
 
         result.classList.add(
             "hidden"
         );
 
-
         error.textContent = "";
-
 
         document
             .getElementById("hourSleep")
@@ -1515,3 +1538,4 @@
 </body>
 
 </html>
+
