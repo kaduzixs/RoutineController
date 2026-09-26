@@ -1,0 +1,1045 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>SleepTracker</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <style>
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --black: #070707;
+            --black-light: #101010;
+            --card: #151515;
+            --card-light: #1d1d1d;
+
+            --red: #e50914;
+            --red-light: #ff2633;
+
+            --white: #f5f5f5;
+            --gray: #8b8b8b;
+            --border: #292929;
+        }
+
+        body {
+            min-height: 100vh;
+            background: var(--black);
+            color: var(--white);
+            font-family: "Inter", sans-serif;
+            overflow-x: hidden;
+        }
+
+        body::before {
+            content: "";
+            position: fixed;
+            width: 450px;
+            height: 450px;
+            background: var(--red);
+            filter: blur(180px);
+            opacity: 0.08;
+            top: -250px;
+            right: -150px;
+            pointer-events: none;
+        }
+
+        .container {
+            width: min(1050px, 92%);
+            margin: auto;
+            padding: 35px 0 30px;
+        }
+
+        /* HEADER */
+
+        .header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 70px;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 13px;
+        }
+
+        .logo-icon {
+            width: 43px;
+            height: 43px;
+
+            display: flex;
+            justify-content: center;
+            align-items: center;
+
+            border-radius: 12px;
+
+            background: var(--red);
+
+            font-size: 20px;
+            font-weight: 800;
+
+            box-shadow: 0 0 30px rgba(229, 9, 20, 0.35);
+        }
+
+        .logo h1 {
+            font-size: 18px;
+            letter-spacing: -0.5px;
+        }
+
+        .logo h1 span {
+            color: var(--red);
+        }
+
+        .logo p {
+            color: var(--gray);
+            font-size: 11px;
+            margin-top: 2px;
+        }
+
+        /* HERO */
+
+        .hero {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+
+            margin-bottom: 55px;
+        }
+
+        .hero-text {
+            max-width: 650px;
+        }
+
+        .tag {
+            color: var(--red-light);
+
+            font-size: 11px;
+            font-weight: 800;
+
+            letter-spacing: 2px;
+        }
+
+        .hero h2 {
+            font-size: clamp(42px, 7vw, 78px);
+            line-height: 0.98;
+
+            letter-spacing: -4px;
+
+            margin: 17px 0;
+        }
+
+        .hero h2 span {
+            display: block;
+            color: var(--red);
+        }
+
+        .hero p {
+            max-width: 530px;
+
+            color: var(--gray);
+
+            font-size: 15px;
+            line-height: 1.7;
+        }
+
+        /* LUA */
+
+        .moon {
+            width: 150px;
+            height: 150px;
+
+            border-radius: 50%;
+
+            background: white;
+
+            position: relative;
+
+            flex-shrink: 0;
+
+            box-shadow: 0 0 70px rgba(255, 255, 255, 0.12);
+        }
+
+        .moon::after {
+            content: "";
+
+            position: absolute;
+
+            width: 150px;
+            height: 150px;
+
+            background: var(--black);
+
+            border-radius: 50%;
+
+            top: -20px;
+            left: 35px;
+        }
+
+        /* CARD */
+
+        .calculator,
+        .result {
+            background: linear-gradient(
+                    145deg,
+                    #171717,
+                    #101010
+            );
+
+            border: 1px solid var(--border);
+
+            border-radius: 22px;
+
+            padding: 35px;
+
+            box-shadow:
+                    0 20px 70px rgba(0, 0, 0, 0.25);
+        }
+
+        /* TITULO */
+
+        .section-title {
+            display: flex;
+            align-items: flex-start;
+
+            gap: 18px;
+
+            margin-bottom: 35px;
+        }
+
+        .number {
+            color: var(--red);
+
+            font-size: 13px;
+            font-weight: 800;
+        }
+
+        .section-title h3 {
+            font-size: 21px;
+
+            margin-bottom: 7px;
+        }
+
+        .section-title p {
+            color: var(--gray);
+
+            font-size: 13px;
+        }
+
+        /* INPUTS */
+
+        .fields {
+            display: grid;
+
+            grid-template-columns:
+                1fr
+                40px
+                1fr;
+
+            align-items: end;
+
+            gap: 15px;
+        }
+
+        .field label {
+            display: flex;
+            align-items: center;
+
+            gap: 8px;
+
+            color: #cfcfcf;
+
+            font-size: 12px;
+
+            margin-bottom: 10px;
+        }
+
+        .dot {
+            width: 7px;
+            height: 7px;
+
+            border-radius: 50%;
+        }
+
+        .dot.red {
+            background: var(--red);
+        }
+
+        .dot.white {
+            background: white;
+        }
+
+        .field input {
+            width: 100%;
+            height: 58px;
+
+            background: #0c0c0c;
+
+            border: 1px solid var(--border);
+
+            border-radius: 12px;
+
+            color: white;
+
+            padding: 0 15px;
+
+            font-family: inherit;
+            font-size: 14px;
+
+            outline: none;
+
+            transition: 0.2s;
+        }
+
+        .field input:focus {
+            border-color: var(--red);
+
+            box-shadow:
+                    0 0 0 3px
+                    rgba(229, 9, 20, 0.08);
+        }
+
+        .field input::-webkit-calendar-picker-indicator {
+            filter: invert(1);
+
+            cursor: pointer;
+        }
+
+        .arrow {
+            height: 58px;
+
+            display: flex;
+            justify-content: center;
+            align-items: center;
+
+            color: var(--red);
+
+            font-size: 22px;
+        }
+
+        /* BOTÃO */
+
+        #calculateButton {
+            width: 100%;
+            height: 58px;
+
+            border: 0;
+            border-radius: 12px;
+
+            margin-top: 25px;
+
+            background: var(--red);
+
+            color: white;
+
+            font-family: inherit;
+
+            font-size: 14px;
+            font-weight: 700;
+
+            cursor: pointer;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            gap: 15px;
+
+            transition: 0.25s;
+        }
+
+        #calculateButton:hover {
+            background: var(--red-light);
+
+            transform: translateY(-2px);
+
+            box-shadow:
+                    0 12px 30px
+                    rgba(229, 9, 20, 0.2);
+        }
+
+        #calculateButton strong {
+            font-size: 20px;
+        }
+
+        /* ERRO */
+
+        .error {
+            color: #ff5964;
+
+            font-size: 13px;
+
+            margin-top: 15px;
+
+            text-align: center;
+        }
+
+        /* RESULTADO */
+
+        .result {
+            margin-top: 25px;
+
+            animation: showResult 0.4s ease;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        @keyframes showResult {
+
+            from {
+                opacity: 0;
+                transform: translateY(15px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+
+        }
+
+        .result-header {
+            display: flex;
+
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .result-header h3 {
+            margin-top: 10px;
+
+            font-size: 22px;
+        }
+
+        .quality-badge {
+            padding: 9px 14px;
+
+            border-radius: 50px;
+
+            background:
+                    rgba(229, 9, 20, 0.12);
+
+            color: var(--red-light);
+
+            border:
+                    1px solid
+                    rgba(229, 9, 20, 0.25);
+
+            font-size: 11px;
+
+            font-weight: 800;
+        }
+
+        /* TEMPO */
+
+        .sleep-time {
+            margin: 45px 0;
+
+            display: flex;
+
+            align-items: baseline;
+
+            gap: 8px;
+        }
+
+        .sleep-time span {
+            font-size: clamp(65px, 12vw, 105px);
+
+            line-height: 0.9;
+
+            font-weight: 800;
+
+            letter-spacing: -5px;
+        }
+
+        .sleep-time small {
+            color: var(--gray);
+
+            font-size: 18px;
+
+            margin-right: 20px;
+        }
+
+        /* QUALIDADE */
+
+        .quality {
+            display: flex;
+
+            align-items: center;
+
+            gap: 15px;
+
+            padding: 18px;
+
+            border-radius: 14px;
+
+            background: #0c0c0c;
+
+            border: 1px solid var(--border);
+        }
+
+        .quality-icon {
+            width: 45px;
+            height: 45px;
+
+            border-radius: 12px;
+
+            background: var(--red);
+
+            display: flex;
+
+            align-items: center;
+            justify-content: center;
+
+            font-weight: 800;
+        }
+
+        .quality span {
+            display: block;
+
+            color: var(--gray);
+
+            font-size: 11px;
+
+            margin-bottom: 5px;
+        }
+
+        .quality strong {
+            font-size: 15px;
+        }
+
+        /* NOVO CALCULO */
+
+        .new-calculation {
+            margin-top: 20px;
+
+            background: transparent;
+
+            color: #bbb;
+
+            border: 1px solid var(--border);
+
+            border-radius: 10px;
+
+            padding: 12px 18px;
+
+            cursor: pointer;
+
+            font-family: inherit;
+
+            transition: 0.2s;
+        }
+
+        .new-calculation:hover {
+            border-color: var(--red);
+
+            color: white;
+        }
+
+        /* FOOTER */
+
+        footer {
+            display: flex;
+
+            justify-content: center;
+
+            gap: 8px;
+
+            color: #555;
+
+            font-size: 11px;
+
+            margin-top: 35px;
+        }
+
+        footer span:first-child {
+            color: var(--red);
+
+            font-weight: 700;
+        }
+
+        /* CELULAR */
+
+        @media (max-width: 700px) {
+
+            .container {
+                padding-top: 25px;
+            }
+
+            .header {
+                margin-bottom: 45px;
+            }
+
+            .hero {
+                margin-bottom: 40px;
+            }
+
+            .hero h2 {
+                font-size: 48px;
+
+                letter-spacing: -2.5px;
+            }
+
+            .hero p {
+                font-size: 13px;
+            }
+
+            .moon {
+                display: none;
+            }
+
+            .calculator,
+            .result {
+                padding: 23px;
+
+                border-radius: 17px;
+            }
+
+            .fields {
+                grid-template-columns: 1fr;
+
+                gap: 20px;
+            }
+
+            .arrow {
+                display: none;
+            }
+
+            .sleep-time {
+                margin: 35px 0;
+            }
+
+            .sleep-time span {
+                font-size: 65px;
+            }
+
+            .sleep-time small {
+                font-size: 14px;
+
+                margin-right: 8px;
+            }
+
+            footer {
+                flex-wrap: wrap;
+            }
+        }
+
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <header class="header">
+
+        <div class="logo">
+
+            <div class="logo-icon">
+                Z
+            </div>
+
+            <div>
+
+                <h1>
+                    Sleep<span>Tracker</span>
+                </h1>
+
+                <p>
+                    Seu sono, seus dados.
+                </p>
+
+            </div>
+
+        </div>
+
+    </header>
+
+
+    <section class="hero">
+
+        <div class="hero-text">
+
+            <span class="tag">
+                MONITORAMENTO DO SONO
+            </span>
+
+            <h2>
+                Descubra quanto
+                <span>você dorme.</span>
+            </h2>
+
+            <p>
+                Informe seus horários de sono e descubra
+                automaticamente quanto tempo você dormiu.
+            </p>
+
+        </div>
+
+
+        <div class="moon"></div>
+
+    </section>
+
+
+    <section class="calculator">
+
+        <div class="section-title">
+
+            <span class="number">
+                01
+            </span>
+
+            <div>
+
+                <h3>
+                    Informe seus horários
+                </h3>
+
+                <p>
+                    Preencha os horários em que você dormiu e acordou.
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <form id="sleepForm">
+
+            <div class="fields">
+
+
+                <div class="field">
+
+                    <label for="hourSleep">
+
+                        <span class="dot red"></span>
+
+                        Hora que dormiu
+
+                    </label>
+
+
+                    <input
+                            type="datetime-local"
+                            id="hourSleep"
+                            required
+                    >
+
+                </div>
+
+
+                <div class="arrow">
+                    →
+                </div>
+
+
+                <div class="field">
+
+                    <label for="hourWake">
+
+                        <span class="dot white"></span>
+
+                        Hora que acordou
+
+                    </label>
+
+
+                    <input
+                            type="datetime-local"
+                            id="hourWake"
+                            required
+                    >
+
+                </div>
+
+
+            </div>
+
+
+            <button
+                    type="submit"
+                    id="calculateButton"
+            >
+
+                <span>
+                    Calcular meu sono
+                </span>
+
+                <strong>
+                    →
+                </strong>
+
+            </button>
+
+        </form>
+
+
+        <div
+                id="error"
+                class="error"
+        ></div>
+
+    </section>
+
+
+    <section
+            id="result"
+            class="result hidden"
+    >
+
+        <div class="result-header">
+
+            <div>
+
+                <span class="tag">
+                    RESULTADO
+                </span>
+
+                <h3>
+                    Seu período de sono
+                </h3>
+
+            </div>
+
+
+            <div
+                    id="qualityBadge"
+                    class="quality-badge"
+            >
+                —
+            </div>
+
+        </div>
+
+
+        <div class="sleep-time">
+
+            <span id="hours">
+                00
+            </span>
+
+            <small>
+                h
+            </small>
+
+
+            <span id="minutes">
+                00
+            </span>
+
+            <small>
+                min
+            </small>
+
+        </div>
+
+
+        <div class="quality">
+
+            <div
+                    class="quality-icon"
+                    id="qualityIcon"
+            >
+                Z
+            </div>
+
+
+            <div>
+
+                <span>
+                    Qualidade do sono
+                </span>
+
+                <strong id="qualityText">
+                    —
+                </strong>
+
+            </div>
+
+        </div>
+
+
+        <button
+                class="new-calculation"
+                onclick="newCalculation()"
+        >
+            Fazer novo cálculo
+        </button>
+
+    </section>
+
+
+    <footer>
+
+        <span>
+            SleepTracker
+        </span>
+
+        <span>
+            •
+        </span>
+
+        <span>
+            Monitoramento pessoal do sono
+        </span>
+
+    </footer>
+
+</div>
+
+
+<script>
+
+    const form = document.getElementById("sleepForm");
+    const result = document.getElementById("result");
+    const error = document.getElementById("error");
+
+    const hoursElement = document.getElementById("hours");
+    const minutesElement = document.getElementById("minutes");
+    const qualityText = document.getElementById("qualityText");
+    const qualityBadge = document.getElementById("qualityBadge");
+
+    form.addEventListener("submit", async function(event) {
+
+        event.preventDefault();
+
+        error.textContent = "";
+
+        const hourSleep = document.getElementById("hourSleep").value;
+        const hourWake = document.getElementById("hourWake").value;
+
+        if (!hourSleep || !hourWake) {
+            error.textContent = "Informe os dois horários.";
+            return;
+        }
+
+        const sleep = new Date(hourSleep);
+        const wake = new Date(hourWake);
+
+        let difference = wake.getTime() - sleep.getTime();
+
+        if (difference <= 0) {
+            difference += 24 * 60 * 60 * 1000;
+        }
+
+        const totalMinutes = Math.floor(
+            difference / (1000 * 60)
+        );
+
+        const hours = Math.floor(totalMinutes / 60);
+        const minutes = totalMinutes % 60;
+
+        showResult(hours, minutes);
+
+        try {
+
+            const response = await fetch("/user/sleep", {
+                method: "POST",
+
+                headers: {
+                    "Content-Type": "application/json"
+                },
+
+                body: JSON.stringify({
+                    hourSleep: hourSleep,
+                    hourWake: hourWake
+                })
+            });
+
+            if (!response.ok) {
+                console.log(
+                    "O cálculo local funcionou, mas o servidor retornou:",
+                    response.status
+                );
+            }
+
+        } catch (err) {
+
+            console.log(
+                "Não foi possível enviar o cálculo ao backend:",
+                err
+            );
+
+        }
+
+    });
+
+    function showResult(hours, minutes) {
+
+        hoursElement.textContent =
+            String(hours).padStart(2, "0");
+
+        minutesElement.textContent =
+            String(minutes).padStart(2, "0");
+
+        let quality;
+
+        if (hours >= 0 && hours <= 3) {
+
+            quality = "RUIM";
+
+        } else if (hours > 3 && hours <= 7) {
+
+            quality = "MEDIO";
+
+        } else if (hours >= 8 && hours <= 10) {
+
+            quality = "BOM";
+
+        } else {
+
+            quality = "MARAVILHOSO";
+
+        }
+
+        const names = {
+            RUIM: "Ruim",
+            MEDIO: "Médio",
+            BOM: "Bom",
+            MARAVILHOSO: "Maravilhoso"
+        };
+
+        qualityText.textContent = names[quality];
+        qualityBadge.textContent = names[quality];
+
+        result.classList.remove("hidden");
+
+        result.scrollIntoView({
+            behavior: "smooth",
+            block: "start"
+        });
+    }
+
+    function newCalculation() {
+
+        form.reset();
+
+        result.classList.add("hidden");
+
+        error.textContent = "";
+
+        window.scrollTo({
+            top: 0,
+            behavior: "smooth"
+        });
+    }
+
+</script>
+
+</body>
+</html>
+
