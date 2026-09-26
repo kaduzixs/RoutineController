@@ -1,453 +1,642 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
     <meta charset="UTF-8">
-    <title>Ritmo — gerenciamento de rotina</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Sleep Tracker</title>
+
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap');
 
-        :root{
-            --bg:#050705;
-            --panel:#0F130F;
-            --panel-2:#161C16;
-            --panel-3:#1F271F;
-            --line:#212B21;
-            --green:#22C55E;
-            --green-dim:#153824;
-            --green-bright:#6EE7A8;
-            --white:#F5F7F5;
-            --muted:#8A928A;
-            --faint:#525952;
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
         }
 
-        *{box-sizing:border-box;}
-        body{
-            margin:0;
-            background:var(--bg);
-            background-image: radial-gradient(ellipse 900px 500px at 15% -10%, rgba(34,197,94,0.09), transparent 60%);
-            font-family:'Space Grotesk', sans-serif;
-            color:var(--white);
-            min-height:100vh;
-        }
-        .mono{ font-family:'JetBrains Mono', monospace; }
-        button{ font-family:inherit; cursor:pointer; }
+        body {
+            min-height: 100vh;
 
-        .app{
-            display:flex;
-            max-width:1080px;
-            margin:0 auto;
-            min-height:100vh;
+            font-family: Arial, sans-serif;
+
+            background:
+                    radial-gradient(circle at top left, #243b55, transparent 40%),
+                    radial-gradient(circle at bottom right, #141e30, transparent 45%),
+                    #090d14;
+
+            color: #ffffff;
+
+            display: flex;
+            justify-content: center;
+            align-items: center;
+
+            padding: 20px;
         }
 
-        /* ---- Sidebar ---- */
-        .sidebar{
-            width:220px;
-            flex-shrink:0;
-            padding:36px 20px;
-            border-right:1px solid var(--line);
-            display:flex;
-            flex-direction:column;
+        .container {
+            width: 100%;
+            max-width: 520px;
         }
-        .brand{
-            font-size:20px;
-            font-weight:700;
-            margin-bottom:2px;
+
+        .card {
+            background: rgba(20, 25, 35, 0.92);
+
+            border: 1px solid rgba(255, 255, 255, 0.08);
+
+            border-radius: 24px;
+
+            padding: 35px;
+
+            box-shadow:
+                    0 25px 70px rgba(0, 0, 0, 0.5);
+
+            backdrop-filter: blur(12px);
         }
-        .brand span{ color:var(--green); }
-        .brand-sub{ font-size:12px; color:var(--faint); margin-bottom:40px; }
 
-        .nav-item{
-            display:flex;
-            align-items:center;
-            gap:12px;
-            padding:12px 14px;
-            border-radius:12px;
-            color:var(--muted);
-            font-size:14px;
-            margin-bottom:4px;
-            border:1px solid transparent;
-            background:none;
-            text-align:left;
-            width:100%;
+        .icone {
+            width: 65px;
+            height: 65px;
+
+            margin: 0 auto 20px;
+
+            display: flex;
+            justify-content: center;
+            align-items: center;
+
+            border-radius: 50%;
+
+            background: #4f8cff;
+
+            font-size: 30px;
+
+            box-shadow:
+                    0 0 30px rgba(79, 140, 255, 0.35);
         }
-        .nav-item .ic{
-            width:18px; height:18px; flex-shrink:0;
-            display:flex; align-items:center; justify-content:center;
+
+        h1 {
+            text-align: center;
+
+            font-size: 30px;
+
+            margin-bottom: 8px;
         }
-        .nav-item.active{
-            background:var(--green-dim);
-            border-color:rgba(34,197,94,0.35);
-            color:var(--green-bright);
+
+        .subtitulo {
+            text-align: center;
+
+            color: #9ca3af;
+
+            margin-bottom: 30px;
         }
-        .nav-item:hover:not(.active){ color:var(--white); }
 
-        .sidebar-foot{
-            margin-top:auto;
-            padding-top:20px;
-            border-top:1px solid var(--line);
-            font-size:12px;
-            color:var(--faint);
+        .secao {
+            margin-bottom: 24px;
         }
-        .sidebar-foot b{ color:var(--muted); display:block; margin-bottom:4px; }
 
-        /* ---- Main ---- */
-        .main{
-            flex:1;
-            padding:36px 40px 60px;
-            min-width:0;
+        .secao-titulo {
+            font-size: 14px;
+
+            color: #9ca3af;
+
+            margin-bottom: 12px;
+
+            text-transform: uppercase;
+
+            letter-spacing: 1px;
         }
-        .page{ display:none; }
-        .page.active{ display:block; }
 
-        .page-head{
-            display:flex;
-            justify-content:space-between;
-            align-items:flex-start;
-            margin-bottom:32px;
+        .linha {
+            display: grid;
+
+            grid-template-columns: 1fr 1fr;
+
+            gap: 12px;
         }
-        .eyebrow{ font-size:12px; color:var(--faint); margin-bottom:6px; }
-        .page-head h1{ font-size:28px; font-weight:600; margin:0; }
-        .avatar{ width:38px;height:38px;border-radius:12px; background:var(--green-dim); border:1px solid var(--green); flex-shrink:0; }
 
-        .grid{ display:grid; grid-template-columns:1.1fr 1fr; gap:20px; }
-        @media (max-width:760px){ .grid{ grid-template-columns:1fr; } .app{ flex-direction:column; } .sidebar{ width:100%; flex-direction:row; align-items:center; border-right:none; border-bottom:1px solid var(--line); padding:16px 20px; } .sidebar-foot{ display:none; } .brand-sub{ display:none; margin:0; } .nav-list{ display:flex; gap:6px; } .nav-item span.label{ display:none; } }
+        .campo {
+            display: flex;
 
-        .card{
-            background:var(--panel);
-            border:1px solid var(--line);
-            border-radius:20px;
-            padding:22px 24px;
+            flex-direction: column;
+
+            gap: 7px;
         }
-        .card + .card{ margin-top:16px; }
-        .card-title{ font-size:13px; color:var(--muted); margin-bottom:14px; }
 
-        /* orbit rings (home) */
-        .orbit-wrap{ position:relative; width:190px; height:190px; margin:0 auto 20px; display:flex; align-items:center; justify-content:center; }
-        .orbit-wrap svg{ position:absolute; inset:0; transform:rotate(-90deg); }
-        .orbit-center{ text-align:center; }
-        .orbit-center .num{ font-size:30px; font-weight:600; }
-        .orbit-center .lbl{ font-size:11px; color:var(--muted); margin-top:4px; }
+        label {
+            font-size: 14px;
 
-        .legend{ display:flex; justify-content:space-between; gap:10px; }
-        .legend-item{ flex:1; }
-        .dot{ width:8px;height:8px;border-radius:50%; display:inline-block; margin-right:6px; }
-        .legend-item .lname{ font-size:12px; color:var(--muted); }
-        .legend-item .lval{ font-size:15px; margin-top:3px; font-weight:600; }
-
-        .row-list .item{
-            display:flex; align-items:center; gap:14px;
-            padding:12px 0; border-bottom:1px solid var(--line);
+            color: #d1d5db;
         }
-        .row-list .item:last-child{ border-bottom:none; }
-        .item-icon{
-            width:38px;height:38px;border-radius:11px; flex-shrink:0;
-            background:var(--panel-2); display:flex; align-items:center; justify-content:center;
+
+        input {
+            width: 100%;
+
+            padding: 14px;
+
+            border-radius: 12px;
+
+            border: 1px solid #343b49;
+
+            background: #111722;
+
+            color: white;
+
+            font-size: 15px;
+
+            outline: none;
+
+            transition: 0.2s;
         }
-        .item-info{ flex:1; }
-        .item-name{ font-size:14px; }
-        .item-sub{ font-size:11px; color:var(--faint); margin-top:2px; }
-        .item-val{ font-size:13px; font-weight:600; }
-        .item-val.pos{ color:var(--green-bright); }
 
-        .btn{
-            background:var(--green); color:#06170D; border:none;
-            padding:12px 18px; border-radius:14px; font-size:13px; font-weight:600;
+        input:focus {
+            border-color: #4f8cff;
+
+            box-shadow:
+                    0 0 0 3px rgba(79, 140, 255, 0.12);
         }
-        .btn.ghost{ background:transparent; border:1px solid var(--line); color:var(--muted); }
 
-        /* sono page */
-        .moon-card{ text-align:center; padding:30px 20px; }
-        .moon{
-            width:70px;height:70px;border-radius:50%; margin:0 auto 14px;
-            background:radial-gradient(circle at 35% 32%, #C9FFDF, #22C55E 55%, #0D3820 100%);
-            box-shadow:0 0 40px rgba(34,197,94,0.3);
+        input::-webkit-calendar-picker-indicator {
+            filter: invert(1);
+            cursor: pointer;
         }
-        .moon-time{ font-size:26px; font-weight:600; }
-        .moon-sub{ font-size:12px; color:var(--muted); margin-top:6px; }
-        .stage-bar{ display:flex; height:10px; border-radius:6px; overflow:hidden; margin:18px 0 8px; }
-        .stage-keys{ display:flex; justify-content:space-between; font-size:11px; color:var(--faint); }
 
-        .week-bars{ display:flex; justify-content:space-between; align-items:flex-end; height:120px; padding:0 4px; margin-bottom:6px; }
-        .week-bars .col{ display:flex; flex-direction:column; align-items:center; gap:8px; flex:1; }
-        .week-bars .bar{ width:16px; border-radius:8px; background:var(--panel-3); }
-        .week-bars .bar.active{ background:var(--green); }
-        .week-bars .day{ font-size:10px; color:var(--faint); }
+        button {
+            width: 100%;
 
-        /* alimentação */
-        .ring-slim{ display:flex; justify-content:center; margin-bottom:8px; }
+            padding: 16px;
 
-        /* exercicio */
-        .pulse-icon{
-            width:42px;height:42px;border-radius:13px; flex-shrink:0;
-            background:var(--green-dim); display:flex; align-items:center; justify-content:center;
+            border: none;
+
+            border-radius: 13px;
+
+            background: linear-gradient(
+                    135deg,
+                    #4f8cff,
+                    #6c5ce7
+            );
+
+            color: white;
+
+            font-size: 16px;
+
+            font-weight: bold;
+
+            cursor: pointer;
+
+            transition: 0.2s;
+
+            box-shadow:
+                    0 10px 25px rgba(79, 140, 255, 0.2);
         }
+
+        button:hover {
+            transform: translateY(-2px);
+
+            box-shadow:
+                    0 14px 30px rgba(79, 140, 255, 0.3);
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        .resultado {
+            margin-top: 25px;
+
+            padding: 22px;
+
+            border-radius: 16px;
+
+            background: #111722;
+
+            border: 1px solid #293140;
+
+            animation: aparecer 0.3s ease;
+        }
+
+        .resultado h2 {
+            margin-bottom: 15px;
+
+            font-size: 18px;
+        }
+
+        .resultado-item {
+            display: flex;
+
+            justify-content: space-between;
+
+            align-items: center;
+
+            padding: 14px 0;
+
+            border-bottom: 1px solid #293140;
+        }
+
+        .resultado-item:last-child {
+            border-bottom: none;
+        }
+
+        .resultado-item span {
+            color: #9ca3af;
+        }
+
+        .resultado-item strong {
+            font-size: 17px;
+        }
+
+        #qualidade {
+            color: #4f8cff;
+        }
+
+        .erro {
+            margin-top: 15px;
+
+            padding: 12px;
+
+            border-radius: 10px;
+
+            background: rgba(255, 92, 92, 0.1);
+
+            color: #ff6b6b;
+
+            text-align: center;
+
+            font-size: 14px;
+        }
+
+        .escondido {
+            display: none;
+        }
+
+        .rodape {
+            text-align: center;
+
+            color: #666f7d;
+
+            font-size: 12px;
+
+            margin-top: 22px;
+        }
+
+        @keyframes aparecer {
+
+            from {
+                opacity: 0;
+                transform: translateY(8px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+
+        }
+
+        @media (max-width: 500px) {
+
+            .card {
+                padding: 25px;
+            }
+
+            .linha {
+                grid-template-columns: 1fr;
+            }
+
+            h1 {
+                font-size: 26px;
+            }
+
+        }
+
     </style>
 </head>
+
+
 <body>
 
-<div class="app">
+<div class="container">
 
-    <!-- SIDEBAR -->
-    <div class="sidebar">
-        <div class="brand">Rit<span>mo</span></div>
-        <div class="brand-sub">gerenciamento de rotina</div>
+    <div class="card">
 
-        <div class="nav-list">
-            <button class="nav-item active" data-page="home">
-          <span class="ic">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 11l9-7 9 7M5 10v10h14V10"/></svg>
-          </span>
-                <span class="label">Início</span>
-            </button>
-            <button class="nav-item" data-page="sono">
-          <span class="ic">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M20 14.5A8 8 0 1 1 9.5 4a6.5 6.5 0 0 0 10.5 10.5z"/></svg>
-          </span>
-                <span class="label">Sono</span>
-            </button>
-            <button class="nav-item" data-page="alimentacao">
-          <span class="ic">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="8"/><path d="M12 8v4l3 2"/></svg>
-          </span>
-                <span class="label">Alimentação</span>
-            </button>
-            <button class="nav-item" data-page="exercicio">
-          <span class="ic">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 12h4l2 8 4-16 2 8h6"/></svg>
-          </span>
-                <span class="label">Exercício</span>
-            </button>
+        <div class="icone">
+            🌙
         </div>
 
-        <div class="sidebar-foot">
-            <b>Índice do dia</b>
-            78 de 100 — bom ritmo
-        </div>
-    </div>
+        <h1>Sleep Tracker</h1>
 
-    <!-- MAIN -->
-    <div class="main">
+        <p class="subtitulo">
+            Calcule sua duração de sono
+        </p>
 
-        <!-- HOME -->
-        <div class="page active" id="page-home">
-            <div class="page-head">
-                <div>
-                    <div class="eyebrow">Terça, 10 de setembro</div>
-                    <h1>Boa noite</h1>
-                </div>
-                <div class="avatar"></div>
+
+        <div class="secao">
+
+            <div class="secao-titulo">
+                Horário que dormiu
             </div>
 
-            <div class="grid">
-                <div class="card">
-                    <div class="card-title">Índice do dia</div>
-                    <div class="orbit-wrap">
-                        <svg viewBox="0 0 190 190">
-                            <circle cx="95" cy="95" r="82" fill="none" stroke="#1F271F" stroke-width="9"/>
-                            <circle cx="95" cy="95" r="82" fill="none" stroke="#22C55E" stroke-width="9" stroke-linecap="round" stroke-dasharray="515" stroke-dashoffset="115"/>
-                            <circle cx="95" cy="95" r="65" fill="none" stroke="#1F271F" stroke-width="9"/>
-                            <circle cx="95" cy="95" r="65" fill="none" stroke="#6EE7A8" stroke-width="9" stroke-linecap="round" stroke-dasharray="408" stroke-dashoffset="190"/>
-                            <circle cx="95" cy="95" r="48" fill="none" stroke="#1F271F" stroke-width="9"/>
-                            <circle cx="95" cy="95" r="48" fill="none" stroke="#F5F7F5" stroke-width="9" stroke-linecap="round" stroke-dasharray="301" stroke-dashoffset="240"/>
-                        </svg>
-                        <div class="orbit-center">
-                            <div class="num">78</div>
-                            <div class="lbl">de 100</div>
-                        </div>
-                    </div>
-                    <div class="legend">
-                        <div class="legend-item"><span class="dot" style="background:var(--green)"></span><div class="lname">Sono</div><div class="lval">7h20</div></div>
-                        <div class="legend-item"><span class="dot" style="background:var(--green-bright)"></span><div class="lname">Refeições</div><div class="lval">3 de 4</div></div>
-                        <div class="legend-item"><span class="dot" style="background:var(--white)"></span><div class="lname">Movimento</div><div class="lval">32 min</div></div>
-                    </div>
+            <div class="linha">
+
+                <div class="campo">
+
+                    <label for="dataSleep">
+                        Data
+                    </label>
+
+                    <input
+                            type="date"
+                            id="dataSleep"
+                    >
+
                 </div>
 
-                <div>
-                    <div class="card">
-                        <div class="card-title">Próximo lembrete</div>
-                        <div class="row-list">
-                            <div class="item">
-                                <div class="item-icon">
-                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#6EE7A8" stroke-width="1.8"><path d="M3 12h4l2 8 4-16 2 8h6"/></svg>
-                                </div>
-                                <div class="item-info">
-                                    <div class="item-name">Caminhada</div>
-                                    <div class="item-sub">18h30 · 30 min</div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="card">
-                        <div class="card-title">Resumo rápido</div>
-                        <div class="row-list">
-                            <div class="item">
-                                <div class="item-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#6EE7A8" stroke-width="1.8"><path d="M20 14.5A8 8 0 1 1 9.5 4a6.5 6.5 0 0 0 10.5 10.5z"/></svg></div>
-                                <div class="item-info"><div class="item-name">Dormiu bem</div><div class="item-sub">Noite passada</div></div>
-                                <div class="item-val pos">7h20</div>
-                            </div>
-                            <div class="item">
-                                <div class="item-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#6EE7A8" stroke-width="1.8"><circle cx="12" cy="12" r="8"/></svg></div>
-                                <div class="item-info"><div class="item-name">Calorias hoje</div><div class="item-sub">De 2200 kcal</div></div>
-                                <div class="item-val">1840</div>
-                            </div>
-                        </div>
-                    </div>
+
+                <div class="campo">
+
+                    <label for="horaSleep">
+                        Horário
+                    </label>
+
+                    <input
+                            type="time"
+                            id="horaSleep"
+                            min="00:00"
+                            max="23:59"
+                            step="60"
+                    >
+
                 </div>
+
             </div>
+
         </div>
 
-        <!-- SONO -->
-        <div class="page" id="page-sono">
-            <div class="page-head">
-                <div>
-                    <div class="eyebrow">Sono</div>
-                    <h1>Noite passada</h1>
-                </div>
+
+        <div class="secao">
+
+            <div class="secao-titulo">
+                Horário que acordou
             </div>
 
-            <div class="grid">
-                <div class="card moon-card">
-                    <div class="moon"></div>
-                    <div class="moon-time">7h 20min</div>
-                    <div class="moon-sub">23h14 → 06h34 · qualidade boa</div>
+            <div class="linha">
 
-                    <div class="stage-bar">
-                        <span style="width:22%; background:#0D3820"></span>
-                        <span style="width:38%; background:#22C55E"></span>
-                        <span style="width:28%; background:#6EE7A8"></span>
-                        <span style="width:12%; background:#F5F7F5"></span>
-                    </div>
-                    <div class="stage-keys"><span>Leve</span><span>Profundo</span><span>REM</span><span>Acordado</span></div>
+                <div class="campo">
+
+                    <label for="dataWake">
+                        Data
+                    </label>
+
+                    <input
+                            type="date"
+                            id="dataWake"
+                    >
+
                 </div>
 
-                <div>
-                    <div class="card">
-                        <div class="card-title">Esta semana</div>
-                        <div class="week-bars">
-                            <div class="col"><div class="bar" style="height:50px"></div><div class="day">S</div></div>
-                            <div class="col"><div class="bar active" style="height:80px"></div><div class="day">T</div></div>
-                            <div class="col"><div class="bar" style="height:60px"></div><div class="day">Q</div></div>
-                            <div class="col"><div class="bar active" style="height:90px"></div><div class="day">Q</div></div>
-                            <div class="col"><div class="bar" style="height:70px"></div><div class="day">S</div></div>
-                            <div class="col"><div class="bar active" style="height:85px"></div><div class="day">S</div></div>
-                            <div class="col"><div class="bar" style="height:40px"></div><div class="day">D</div></div>
-                        </div>
-                    </div>
-                    <div class="card">
-                        <div class="row-list">
-                            <div class="item"><div class="item-info"><div class="item-name">Deitou</div></div><div class="item-val">23h14</div></div>
-                            <div class="item"><div class="item-info"><div class="item-name">Despertares</div></div><div class="item-val">2</div></div>
-                            <div class="item"><div class="item-info"><div class="item-name">Acordou</div></div><div class="item-val">06h34</div></div>
-                        </div>
-                    </div>
+
+                <div class="campo">
+
+                    <label for="horaWake">
+                        Horário
+                    </label>
+
+                    <input
+                            type="time"
+                            id="horaWake"
+                            min="00:00"
+                            max="23:59"
+                            step="60"
+                    >
+
                 </div>
+
             </div>
+
         </div>
 
-        <!-- ALIMENTAÇÃO -->
-        <div class="page" id="page-alimentacao">
-            <div class="page-head">
-                <div>
-                    <div class="eyebrow">Alimentação</div>
-                    <h1>Hoje</h1>
-                </div>
-                <button class="btn">+ Registrar refeição</button>
+
+        <button onclick="calcularSono()">
+            Calcular meu sono
+        </button>
+
+
+        <div
+                id="resultado"
+                class="resultado escondido"
+        >
+
+            <h2>🌙 Resultado</h2>
+
+
+            <div class="resultado-item">
+
+                <span>
+                    Duração
+                </span>
+
+                <strong id="duracao">
+                    -
+                </strong>
+
             </div>
 
-            <div class="grid">
-                <div class="card">
-                    <div class="card-title">Calorias</div>
-                    <div class="ring-slim">
-                        <svg width="150" height="150" viewBox="0 0 150 150">
-                            <circle cx="75" cy="75" r="62" fill="none" stroke="#1F271F" stroke-width="12"/>
-                            <circle cx="75" cy="75" r="62" fill="none" stroke="#22C55E" stroke-width="12" stroke-linecap="round" stroke-dasharray="390" stroke-dashoffset="110" transform="rotate(-90 75 75)"/>
-                            <text x="75" y="70" text-anchor="middle" fill="#F5F7F5" font-family="Space Grotesk, sans-serif" font-size="24" font-weight="600">1840</text>
-                            <text x="75" y="90" text-anchor="middle" fill="#8A928A" font-family="Space Grotesk, sans-serif" font-size="10">de 2200 kcal</text>
-                        </svg>
-                    </div>
-                </div>
 
-                <div class="card">
-                    <div class="card-title">Refeições de hoje</div>
-                    <div class="row-list">
-                        <div class="item">
-                            <div class="item-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#6EE7A8" stroke-width="1.8"><circle cx="12" cy="12" r="8"/></svg></div>
-                            <div class="item-info"><div class="item-name">Café da manhã</div><div class="item-sub">07h40</div></div>
-                            <div class="item-val">420 kcal</div>
-                        </div>
-                        <div class="item">
-                            <div class="item-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#6EE7A8" stroke-width="1.8"><rect x="5" y="5" width="14" height="14" rx="3"/></svg></div>
-                            <div class="item-info"><div class="item-name">Almoço</div><div class="item-sub">12h20</div></div>
-                            <div class="item-val">680 kcal</div>
-                        </div>
-                        <div class="item">
-                            <div class="item-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#6EE7A8" stroke-width="1.8"><path d="M12 5v14M5 12h14"/></svg></div>
-                            <div class="item-info"><div class="item-name">Lanche</div><div class="item-sub">16h05</div></div>
-                            <div class="item-val">240 kcal</div>
-                        </div>
-                    </div>
-                </div>
+            <div class="resultado-item">
+
+                <span>
+                    Qualidade
+                </span>
+
+                <strong id="qualidade">
+                    -
+                </strong>
+
             </div>
+
         </div>
 
-        <!-- EXERCÍCIO -->
-        <div class="page" id="page-exercicio">
-            <div class="page-head">
-                <div>
-                    <div class="eyebrow">Exercício</div>
-                    <h1>Esta semana</h1>
-                </div>
-            </div>
 
-            <div class="grid">
-                <div class="card">
-                    <div class="card-title">Minutos ativos — 186 min</div>
-                    <div class="week-bars">
-                        <div class="col"><div class="bar" style="height:30px"></div><div class="day">S</div></div>
-                        <div class="col"><div class="bar active" style="height:60px"></div><div class="day">T</div></div>
-                        <div class="col"><div class="bar" style="height:20px"></div><div class="day">Q</div></div>
-                        <div class="col"><div class="bar active" style="height:80px"></div><div class="day">Q</div></div>
-                        <div class="col"><div class="bar active" style="height:45px"></div><div class="day">S</div></div>
-                        <div class="col"><div class="bar" style="height:15px"></div><div class="day">S</div></div>
-                        <div class="col"><div class="bar" style="height:5px"></div><div class="day">D</div></div>
-                    </div>
-                </div>
+        <p
+                id="erro"
+                class="erro escondido"
+        ></p>
 
-                <div class="card">
-                    <div class="card-title">Treinos recentes</div>
-                    <div class="row-list">
-                        <div class="item">
-                            <div class="pulse-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#6EE7A8" stroke-width="1.8"><path d="M3 12h4l2 8 4-16 2 8h6"/></svg></div>
-                            <div class="item-info"><div class="item-name">Corrida leve</div><div class="item-sub">32 min · 4,1 km · ontem</div></div>
-                        </div>
-                        <div class="item">
-                            <div class="pulse-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#6EE7A8" stroke-width="1.8"><path d="M6 9v6M18 9v6M2 12h2M20 12h2M6 12h12"/></svg></div>
-                            <div class="item-info"><div class="item-name">Força · superiores</div><div class="item-sub">40 min · terça</div></div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+
+        <div class="rodape">
+            Sleep Tracker • Spring Boot
         </div>
 
     </div>
+
 </div>
 
+
 <script>
-    const navItems = document.querySelectorAll('.nav-item');
-    const pages = document.querySelectorAll('.page');
 
-    navItems.forEach(function(btn){
-        btn.addEventListener('click', function(){
-            const target = btn.getAttribute('data-page');
+    async function calcularSono() {
 
-            navItems.forEach(function(n){ n.classList.remove('active'); });
-            btn.classList.add('active');
+        const dataSleep =
+            document.getElementById("dataSleep").value;
 
-            pages.forEach(function(p){ p.classList.remove('active'); });
-            document.getElementById('page-' + target).classList.add('active');
-        });
-    });
+        const horaSleep =
+            document.getElementById("horaSleep").value;
+
+        const dataWake =
+            document.getElementById("dataWake").value;
+
+        const horaWake =
+            document.getElementById("horaWake").value;
+
+
+        const resultado =
+            document.getElementById("resultado");
+
+        const erro =
+            document.getElementById("erro");
+
+
+        resultado.classList.add("escondido");
+
+        erro.classList.add("escondido");
+
+        erro.textContent = "";
+
+
+        if (
+            !dataSleep ||
+            !horaSleep ||
+            !dataWake ||
+            !horaWake
+        ) {
+
+            mostrarErro(
+                "Preencha todos os campos."
+            );
+
+            return;
+        }
+
+
+        const dados = {
+
+            hourSleep:
+                `${dataSleep}T${horaSleep}:00`,
+
+            hourWake:
+                `${dataWake}T${horaWake}:00`
+
+        };
+
+
+        try {
+
+            const resposta = await fetch(
+                "http://localhost:8080/user/sleep",
+                {
+                    method: "POST",
+
+                    headers: {
+                        "Content-Type":
+                            "application/json"
+                    },
+
+                    body: JSON.stringify(dados)
+                }
+            );
+
+
+            if (!resposta.ok) {
+
+                throw new Error(
+                    "Não foi possível conectar ao servidor."
+                );
+
+            }
+
+
+            const duration =
+                await resposta.json();
+
+
+            const segundos =
+                duration.seconds;
+
+
+            const horas =
+                Math.floor(segundos / 3600);
+
+
+            const minutos =
+                Math.floor(
+                    (segundos % 3600) / 60
+                );
+
+
+            document.getElementById("duracao")
+                .textContent =
+                `${horas}h ${minutos}min`;
+
+
+            let qualidade;
+
+
+            if (horas >= 0 && horas <= 3) {
+
+                qualidade = "RUIM";
+
+            }
+
+            else if (horas > 3 && horas <= 7) {
+
+                qualidade = "MEDIO";
+
+            }
+
+            else if (horas >= 8 && horas <= 10) {
+
+                qualidade = "BOM";
+
+            }
+
+            else {
+
+                qualidade = "MARAVILHOSO";
+
+            }
+
+
+            document.getElementById("qualidade")
+                .textContent =
+                qualidade;
+
+
+            resultado.classList.remove(
+                "escondido"
+            );
+
+
+        } catch (error) {
+
+            mostrarErro(error.message);
+
+        }
+
+    }
+
+
+    function mostrarErro(mensagem) {
+
+        const erro =
+            document.getElementById("erro");
+
+        erro.textContent = mensagem;
+
+        erro.classList.remove("escondido");
+
+    }
+
 </script>
 
 </body>
+
 </html>

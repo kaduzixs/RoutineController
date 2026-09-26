@@ -3,45 +3,41 @@ package Service;
 import org.springframework.stereotype.Service;
 
 import java.time.Duration;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 
 @Service
 
 public class SleepService {
-    public Duration calculateSleep(LocalTime hourSleep, LocalTime hourWake){
-        Duration duration;
-        if(hourWake.isBefore(hourSleep)){
-            hourWake = hourSleep.plusHours(24);
+    public Duration calculateSleep(LocalDateTime hourSleep, LocalDateTime hourWake){
+        if (hourSleep.isAfter(hourWake)){
+            LocalDateTime wake = hourWake.plusDays(1);
+            return Duration.between(hourSleep, wake);
         }
         return Duration.between(hourSleep, hourWake);
+
     }
 
     public Qualite calculateQualite(Duration duration){
         long hours = duration.toHours();
 
-        if(hours >=0 && hours <=3){
+        if(hours >=0 && hours <=3)
             return Qualite.RUIM;
-        }
-        else if(hours >=4 && hours <=7){
+        if(hours >3 && hours <=7)
             return Qualite.MEDIO;
-        }
-        else if(hours >7 && hours <=10) {
+        if(hours >=8 && hours <=10)
             return Qualite.BOM;
-        }
-        else
-            return Qualite.MARAVILHOSO;
-    }
 
-    public String durationSleep(Duration duration){
-        long hours = duration.toHours();
-        long minutes = duration.toMinutesPart();
-
-        return "Horas: "+hours+ "Minutes: "+minutes;
+        return Qualite.MARAVILHOSO;
     }
 
     public enum Qualite{
         RUIM, MEDIO, BOM, MARAVILHOSO;
+
     }
+
+
 
 
 
