@@ -7,7 +7,7 @@ import lombok.Setter;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
-import java.awt.List;
+import java.util.List;
 import java.util.ArrayList;
 
 @Service
@@ -28,8 +28,14 @@ public class LifeService{
         return refeicoes;
     }
 
+    public void addRefeicao(Refeicao refeicao) {
+        refeicoes.add(refeicao);
+    }
+
+
+
     @Scheduled(cron = "0 0 0 * * *")
-    public void resetarRefeicoes() {
+    public void resetRefeicoes() {
         refeicoes.clear();
     }
 

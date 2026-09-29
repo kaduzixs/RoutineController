@@ -1,22 +1,23 @@
 package Models;
 
+import lombok.Getter;
+import lombok.Setter;
+
 import java.time.LocalTime;
+@Getter
+@Setter
 public class Refeicao {
 
-        private String nome;
-        private LocalTime horario;
+        private String name;
+        private LocalTime hour;
+        private int calouries;
 
-        public Refeicao(String nome, LocalTime horario) {
-            this.nome = nome;
-            this.horario = horario;
+        public Refeicao(String name, LocalTime hour, int calouries) {
+            this.name = name;
+            this.hour = hour;
+            this.calouries = calouries;
         }
 
-        public String getNome() {
-            return nome;
-        }
 
-        public LocalTime getHorario() {
-            return horario;
-        }
     }
 
