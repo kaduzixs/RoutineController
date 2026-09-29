@@ -1,7 +1,9 @@
 package Controller;
 
 
+import DTO.LifeDto;
 import DTO.SleepDto;
+import Service.LifeService;
 import Service.SleepService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -17,12 +19,22 @@ public class SleepController{
     @Autowired
     private SleepService sleepService;
 
+    @Autowired
+    private LifeService lifeService;
+
     @PostMapping("/sleep")
     public Duration sleep(@RequestBody SleepDto dto){
         LocalDateTime hourSleep = dto.getHourSleep();
         LocalDateTime hourWake = dto.getHourWake();
         Duration calculateDuration = sleepService.calculateSleep(hourSleep, hourWake);
         return calculateDuration;
+    }
+
+    @PostMapping("/calouries")
+    public String calouries(@RequestBody LifeDto life){
+        String TypeFood = life.getFood();
+        int calouries = life.getCaloria();
+        return "Food: "+TypeFood+"Calouries: "+calouries;
     }
 
 }
