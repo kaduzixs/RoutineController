@@ -1,1541 +1,263 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
-
 <head>
-
     <meta charset="UTF-8">
-
-    <meta
-            name="viewport"
-            content="width=device-width, initial-scale=1.0"
-    >
-
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SleepTracker</title>
-
-    <link
-            rel="preconnect"
-            href="https://fonts.googleapis.com"
-    >
-
-    <link
-            rel="preconnect"
-            href="https://fonts.gstatic.com"
-            crossorigin
-    >
-
-    <link
-            href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
-            rel="stylesheet"
-    >
-
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        :root {
-            --black: #070707;
-            --black-light: #101010;
-            --card: #151515;
-            --red: #e50914;
-            --red-light: #ff2633;
-            --white: #f5f5f5;
-            --gray: #8b8b8b;
-            --border: #292929;
-        }
-
-        html {
-            scroll-behavior: smooth;
-        }
-
-        body {
-            min-height: 100vh;
-            width: 100%;
-
-            background: var(--black);
-            color: var(--white);
-
-            font-family: "Inter", sans-serif;
-
-            overflow-x: hidden;
-        }
-
-        body::before {
-            content: "";
-
-            position: fixed;
-
-            width: 450px;
-            height: 450px;
-
-            background: var(--red);
-
-            filter: blur(180px);
-
-            opacity: 0.08;
-
-            top: -250px;
-            right: -150px;
-
-            pointer-events: none;
-
-            z-index: -1;
-        }
-
-        .container {
-            width: min(1050px, calc(100% - 40px));
-
-            margin: 0 auto;
-
-            padding: 35px 0 30px;
-        }
-
-        /* HEADER */
-
-        .header {
-            display: flex;
-            align-items: center;
-
-            margin-bottom: clamp(40px, 7vw, 70px);
-        }
-
-        .logo {
-            display: flex;
-            align-items: center;
-
-            gap: 13px;
-
-            min-width: 0;
-        }
-
-        .logo-icon {
-            width: 43px;
-            height: 43px;
-
-            min-width: 43px;
-
-            display: flex;
-            justify-content: center;
-            align-items: center;
-
-            border-radius: 12px;
-
-            background: var(--red);
-
-            font-size: 20px;
-            font-weight: 800;
-
-            box-shadow:
-                    0 0 30px rgba(229, 9, 20, 0.35);
-        }
-
-        .logo h1 {
-            font-size: 18px;
-
-            letter-spacing: -0.5px;
-        }
-
-        .logo h1 span {
-            color: var(--red);
-        }
-
-        .logo p {
-            color: var(--gray);
-
-            font-size: 11px;
-
-            margin-top: 2px;
-        }
-
-        /* HERO */
-
-        .hero {
-            display: flex;
-
-            justify-content: space-between;
-            align-items: center;
-
-            gap: 50px;
-
-            margin-bottom: clamp(35px, 6vw, 55px);
-        }
-
-        .hero-text {
-            max-width: 650px;
-
-            min-width: 0;
-        }
-
-        .tag {
-            color: var(--red-light);
-
-            font-size: 11px;
-            font-weight: 800;
-
-            letter-spacing: 2px;
-        }
-
-        .hero h2 {
-            font-size: clamp(42px, 7vw, 78px);
-
-            line-height: 0.98;
-
-            letter-spacing: clamp(-4px, -0.4vw, -2px);
-
-            margin: 17px 0;
-        }
-
-        .hero h2 span {
-            display: block;
-
-            color: var(--red);
-        }
-
-        .hero p {
-            max-width: 530px;
-
-            color: var(--gray);
-
-            font-size: 15px;
-
-            line-height: 1.7;
-        }
-
-        /* LUA */
-
-        .moon {
-            width: 150px;
-            height: 150px;
-
-            min-width: 150px;
-
-            border-radius: 50%;
-
-            background: white;
-
-            position: relative;
-
-            box-shadow:
-                    0 0 70px rgba(255, 255, 255, 0.12);
-        }
-
-        .moon::after {
-            content: "";
-
-            position: absolute;
-
-            width: 150px;
-            height: 150px;
-
-            background: var(--black);
-
-            border-radius: 50%;
-
-            top: -20px;
-            left: 35px;
-        }
-
-        /* CARDS */
-
-        .calculator,
-        .result {
-            width: 100%;
-
-            background:
-                    linear-gradient(
-                            145deg,
-                            #171717,
-                            #101010
-                    );
-
-            border: 1px solid var(--border);
-
-            border-radius: 22px;
-
-            padding: clamp(22px, 4vw, 35px);
-
-            box-shadow:
-                    0 20px 70px rgba(0, 0, 0, 0.25);
-        }
-
-        /* TITULO */
-
-        .section-title {
-            display: flex;
-
-            align-items: flex-start;
-
-            gap: 18px;
-
-            margin-bottom: 35px;
-        }
-
-        .number {
-            color: var(--red);
-
-            font-size: 13px;
-            font-weight: 800;
-
-            flex-shrink: 0;
-        }
-
-        .section-title h3 {
-            font-size: 21px;
-
-            margin-bottom: 7px;
-        }
-
-        .section-title p {
-            color: var(--gray);
-
-            font-size: 13px;
-
-            line-height: 1.5;
-        }
-
-        /* FORM */
-
-        #sleepForm {
-            width: 100%;
-        }
-
-        .fields {
-            width: 100%;
-
-            display: grid;
-
-            grid-template-columns:
-                minmax(0, 1fr)
-                40px
-                minmax(0, 1fr);
-
-            align-items: end;
-
-            gap: 15px;
-        }
-
-        .field {
-            width: 100%;
-
-            min-width: 0;
-        }
-
-        .field label {
-            display: flex;
-
-            align-items: center;
-
-            gap: 8px;
-
-            color: #cfcfcf;
-
-            font-size: 12px;
-
-            margin-bottom: 10px;
-        }
-
-        .dot {
-            width: 7px;
-            height: 7px;
-
-            min-width: 7px;
-
-            border-radius: 50%;
-        }
-
-        .dot.red {
-            background: var(--red);
-        }
-
-        .dot.white {
-            background: white;
-        }
-
-        /* INPUT */
-
-        .field input {
-            display: block;
-
-            width: 100%;
-            max-width: 100%;
-
-            height: 58px;
-
-            background: #0c0c0c;
-
-            border: 1px solid var(--border);
-
-            border-radius: 12px;
-
-            color: white;
-
-            padding: 0 14px;
-
-            font-family: inherit;
-
-            font-size: 14px;
-
-            outline: none;
-
-            transition:
-                    border-color 0.2s,
-                    box-shadow 0.2s;
-        }
-
-        .field input:focus {
-            border-color: var(--red);
-
-            box-shadow:
-                    0 0 0 3px
-                    rgba(229, 9, 20, 0.08);
-        }
-
-        .field input::-webkit-calendar-picker-indicator {
-            filter: invert(1);
-
-            cursor: pointer;
-        }
-
-        /* SETA */
-
-        .arrow {
-            height: 58px;
-
-            display: flex;
-
-            justify-content: center;
-            align-items: center;
-
-            color: var(--red);
-
-            font-size: 22px;
-
-            flex-shrink: 0;
-        }
-
-        /* BOTAO */
-
-        #calculateButton {
-            width: 100%;
-            min-height: 58px;
-
-            border: 0;
-
-            border-radius: 12px;
-
-            margin-top: 25px;
-
-            padding: 12px 20px;
-
-            background: var(--red);
-
-            color: white;
-
-            font-family: inherit;
-
-            font-size: 14px;
-            font-weight: 700;
-
-            cursor: pointer;
-
-            display: flex;
-
-            align-items: center;
-            justify-content: center;
-
-            gap: 15px;
-
-            transition:
-                    background 0.25s,
-                    transform 0.25s,
-                    box-shadow 0.25s;
-        }
-
-        #calculateButton:hover {
-            background: var(--red-light);
-
-            transform: translateY(-2px);
-
-            box-shadow:
-                    0 12px 30px
-                    rgba(229, 9, 20, 0.2);
-        }
-
-        #calculateButton:active {
-            transform: translateY(0);
-        }
-
-        #calculateButton strong {
-            font-size: 20px;
-        }
-
-        /* ERRO */
-
-        .error {
-            width: 100%;
-
-            color: #ff5964;
-
-            font-size: 13px;
-
-            margin-top: 15px;
-
-            text-align: center;
-
-            line-height: 1.5;
-
-            overflow-wrap: anywhere;
-        }
-
-        /* RESULTADO */
-
-        .result {
-            margin-top: 25px;
-
-            animation:
-                    showResult 0.4s ease;
-        }
-
-        .hidden {
-            display: none;
-        }
-
-        @keyframes showResult {
-
-            from {
-                opacity: 0;
-
-                transform:
-                        translateY(15px);
-            }
-
-            to {
-                opacity: 1;
-
-                transform:
-                        translateY(0);
-            }
-        }
-
-        /* RESULTADO HEADER */
-
-        .result-header {
-            display: flex;
-
-            justify-content: space-between;
-            align-items: flex-start;
-
-            gap: 20px;
-        }
-
-        .result-header h3 {
-            margin-top: 10px;
-
-            font-size: 22px;
-        }
-
-        .quality-badge {
-            padding: 9px 14px;
-
-            border-radius: 50px;
-
-            background:
-                    rgba(229, 9, 20, 0.12);
-
-            color: var(--red-light);
-
-            border:
-                    1px solid
-                    rgba(229, 9, 20, 0.25);
-
-            font-size: 11px;
-
-            font-weight: 800;
-
-            white-space: nowrap;
-        }
-
-        /* TEMPO */
-
-        .sleep-time {
-            width: 100%;
-
-            margin: 45px 0;
-
-            display: flex;
-
-            align-items: baseline;
-
-            flex-wrap: wrap;
-
-            gap: 8px;
-        }
-
-        .sleep-time span {
-            font-size:
-                    clamp(60px, 12vw, 105px);
-
-            line-height: 0.9;
-
-            font-weight: 800;
-
-            letter-spacing:
-                    clamp(-5px, -0.5vw, -2px);
-        }
-
-        .sleep-time small {
-            color: var(--gray);
-
-            font-size: 18px;
-
-            margin-right: 20px;
-        }
-
-        /* QUALIDADE */
-
-        .quality {
-            width: 100%;
-
-            display: flex;
-
-            align-items: center;
-
-            gap: 15px;
-
-            padding: 18px;
-
-            border-radius: 14px;
-
-            background: #0c0c0c;
-
-            border: 1px solid var(--border);
-        }
-
-        .quality-icon {
-            width: 45px;
-            height: 45px;
-
-            min-width: 45px;
-
-            border-radius: 12px;
-
-            background: var(--red);
-
-            display: flex;
-
-            align-items: center;
-            justify-content: center;
-
-            font-weight: 800;
-        }
-
-        .quality span {
-            display: block;
-
-            color: var(--gray);
-
-            font-size: 11px;
-
-            margin-bottom: 5px;
-        }
-
-        .quality strong {
-            font-size: 15px;
-        }
-
-        /* NOVO CALCULO */
-
-        .new-calculation {
-            max-width: 100%;
-
-            margin-top: 20px;
-
-            background: transparent;
-
-            color: #bbb;
-
-            border: 1px solid var(--border);
-
-            border-radius: 10px;
-
-            padding: 12px 18px;
-
-            cursor: pointer;
-
-            font-family: inherit;
-
-            transition:
-                    border-color 0.2s,
-                    color 0.2s;
-        }
-
-        .new-calculation:hover {
-            border-color: var(--red);
-
-            color: white;
-        }
-
-        /* FOOTER */
-
-        footer {
-            display: flex;
-
-            justify-content: center;
-            align-items: center;
-
-            flex-wrap: wrap;
-
-            gap: 8px;
-
-            color: #555;
-
-            font-size: 11px;
-
-            text-align: center;
-
-            margin-top: 35px;
-        }
-
-        footer span:first-child {
-            color: var(--red);
-
-            font-weight: 700;
-        }
-
-        /* TABLET */
-
-        @media (max-width: 800px) {
-
-            .container {
-                width: min(
-                        calc(100% - 32px),
-                        700px
-                );
-            }
-
-            .hero {
-                gap: 25px;
-            }
-
-            .moon {
-                width: 120px;
-                height: 120px;
-
-                min-width: 120px;
-            }
-
-            .moon::after {
-                width: 120px;
-                height: 120px;
-
-                left: 28px;
-            }
-        }
-
-        /* CELULAR */
-
-        @media (max-width: 650px) {
-
-            .container {
-                width: calc(100% - 24px);
-
-                padding-top: 22px;
-            }
-
-            .header {
-                margin-bottom: 42px;
-            }
-
-            .hero {
-                display: block;
-
-                margin-bottom: 35px;
-            }
-
-            .hero-text {
-                width: 100%;
-            }
-
-            .hero h2 {
-                font-size:
-                        clamp(40px, 12vw, 54px);
-
-                letter-spacing: -2.5px;
-
-                margin-top: 14px;
-            }
-
-            .hero p {
-                font-size: 13px;
-
-                max-width: 100%;
-            }
-
-            .moon {
-                display: none;
-            }
-
-            .calculator,
-            .result {
-                padding: 20px;
-
-                border-radius: 17px;
-            }
-
-            .section-title {
-                gap: 12px;
-
-                margin-bottom: 27px;
-            }
-
-            .section-title h3 {
-                font-size: 18px;
-            }
-
-            .section-title p {
-                font-size: 12px;
-            }
-
-            .fields {
-                display: flex;
-
-                flex-direction: column;
-
-                align-items: stretch;
-
-                gap: 18px;
-            }
-
-            .field {
-                width: 100%;
-            }
-
-            .arrow {
-                display: none;
-            }
-
-            .field input {
-                width: 100%;
-
-                height: 55px;
-
-                font-size: 14px;
-            }
-
-            #calculateButton {
-                min-height: 55px;
-
-                margin-top: 22px;
-
-                padding: 12px 15px;
-
-                font-size: 13px;
-            }
-
-            .result-header {
-                flex-direction: column;
-
-                align-items: flex-start;
-
-                gap: 15px;
-            }
-
-            .result-header h3 {
-                font-size: 19px;
-            }
-
-            .quality-badge {
-                font-size: 10px;
-            }
-
-            .sleep-time {
-                margin: 35px 0;
-
-                gap: 5px;
-            }
-
-            .sleep-time span {
-                font-size:
-                        clamp(58px, 18vw, 78px);
-
-                letter-spacing: -3px;
-            }
-
-            .sleep-time small {
-                font-size: 13px;
-
-                margin-right: 8px;
-            }
-
-            .quality {
-                padding: 15px;
-
-                gap: 12px;
-            }
-
-            .quality-icon {
-                width: 42px;
-                height: 42px;
-
-                min-width: 42px;
-            }
-
-            .quality strong {
-                font-size: 14px;
-            }
-
-            .new-calculation {
-                width: 100%;
-
-                padding: 12px;
-            }
-
-            footer {
-                padding: 0 10px;
-
-                line-height: 1.5;
-            }
-        }
-
-        /* CELULAR PEQUENO */
-
-        @media (max-width: 380px) {
-
-            .container {
-                width: calc(100% - 18px);
-            }
-
-            .calculator,
-            .result {
-                padding: 17px;
-            }
-
-            .logo h1 {
-                font-size: 16px;
-            }
-
-            .logo p {
-                font-size: 10px;
-            }
-
-            .hero h2 {
-                font-size: 39px;
-            }
-
-            .sleep-time span {
-                font-size: 54px;
-
-                letter-spacing: -2px;
-            }
-
-            .sleep-time small {
-                font-size: 12px;
-
-                margin-right: 4px;
-            }
-        }
-
-        /* CELULAR MUITO PEQUENO */
-
-        @media (max-width: 320px) {
-
-            .container {
-                width: calc(100% - 14px);
-            }
-
-            .calculator,
-            .result {
-                padding: 15px;
-            }
-
-            .hero h2 {
-                font-size: 35px;
-            }
-
-            .field input {
-                font-size: 13px;
-
-                padding-left: 10px;
-                padding-right: 10px;
-            }
-
-            .sleep-time span {
-                font-size: 48px;
-            }
-        }
-
+        *{margin:0;padding:0;box-sizing:border-box}
+        :root{--black:#070707;--black-light:#101010;--card:#151515;--red:#e50914;--red-light:#ff2633;--white:#f5f5f5;--gray:#8b8b8b;--border:#292929}
+        html{scroll-behavior:smooth}
+        body{min-height:100vh;width:100%;background:var(--black);color:var(--white);font-family:"Inter",sans-serif;overflow-x:hidden}
+        body::before{content:"";position:fixed;width:450px;height:450px;background:var(--red);filter:blur(180px);opacity:.08;top:-250px;right:-150px;pointer-events:none;z-index:-1}
+        .container{width:min(1050px,calc(100% - 40px));margin:0 auto;padding:28px 0 30px}
+        .header{display:flex;align-items:center;justify-content:space-between;gap:25px;margin-bottom:25px}
+        .logo{display:flex;align-items:center;gap:13px;min-width:0}
+        .logo-icon{width:43px;height:43px;min-width:43px;display:flex;justify-content:center;align-items:center;border-radius:12px;background:var(--red);font-size:20px;font-weight:800;box-shadow:0 0 30px rgba(229,9,20,.35)}
+        .logo h1{font-size:18px;letter-spacing:-.5px}.logo h1 span{color:var(--red)}.logo p{color:var(--gray);font-size:11px;margin-top:2px}
+        .navbar{display:flex;gap:7px;padding:6px;background:#0e0e0e;border:1px solid var(--border);border-radius:14px;margin-bottom:50px;overflow-x:auto}
+        .nav-btn{border:0;background:transparent;color:#8f8f8f;padding:11px 17px;border-radius:9px;font-family:inherit;font-size:12px;font-weight:700;cursor:pointer;white-space:nowrap;transition:.2s}
+        .nav-btn:hover{color:white}.nav-btn.active{background:var(--red);color:white;box-shadow:0 8px 22px rgba(229,9,20,.18)}
+        .page{display:none}.page.active{display:block}
+        .hero{display:flex;justify-content:space-between;align-items:center;gap:50px;margin-bottom:clamp(35px,6vw,55px)}
+        .hero-text{max-width:650px;min-width:0}.tag{color:var(--red-light);font-size:11px;font-weight:800;letter-spacing:2px}.hero h2{font-size:clamp(42px,7vw,78px);line-height:.98;letter-spacing:clamp(-4px,-.4vw,-2px);margin:17px 0}.hero h2 span{display:block;color:var(--red)}.hero p{max-width:530px;color:var(--gray);font-size:15px;line-height:1.7}
+        .moon{width:150px;height:150px;min-width:150px;border-radius:50%;background:white;position:relative;box-shadow:0 0 70px rgba(255,255,255,.12)}.moon::after{content:"";position:absolute;width:150px;height:150px;background:var(--black);border-radius:50%;top:-20px;left:35px}
+        .calculator,.result,.food-card,.summary-card{width:100%;background:linear-gradient(145deg,#171717,#101010);border:1px solid var(--border);border-radius:22px;padding:clamp(22px,4vw,35px);box-shadow:0 20px 70px rgba(0,0,0,.25)}
+        .section-title{display:flex;align-items:flex-start;gap:18px;margin-bottom:35px}.number{color:var(--red);font-size:13px;font-weight:800;flex-shrink:0}.section-title h3{font-size:21px;margin-bottom:7px}.section-title p{color:var(--gray);font-size:13px;line-height:1.5}
+        .fields{width:100%;display:grid;grid-template-columns:minmax(0,1fr) 40px minmax(0,1fr);align-items:end;gap:15px}.field{width:100%;min-width:0}.field label{display:flex;align-items:center;gap:8px;color:#cfcfcf;font-size:12px;margin-bottom:10px}.dot{width:7px;height:7px;min-width:7px;border-radius:50%}.dot.red{background:var(--red)}.dot.white{background:white}
+        .field input,.field select{display:block;width:100%;max-width:100%;height:58px;background:#0c0c0c;border:1px solid var(--border);border-radius:12px;color:white;padding:0 14px;font-family:inherit;font-size:14px;outline:none;transition:border-color .2s,box-shadow .2s}.field input:focus,.field select:focus{border-color:var(--red);box-shadow:0 0 0 3px rgba(229,9,20,.08)}.field input::-webkit-calendar-picker-indicator{filter:invert(1);cursor:pointer}.field select{appearance:auto}
+        .arrow{height:58px;display:flex;justify-content:center;align-items:center;color:var(--red);font-size:22px;flex-shrink:0}
+        .primary-button{width:100%;min-height:58px;border:0;border-radius:12px;margin-top:25px;padding:12px 20px;background:var(--red);color:white;font-family:inherit;font-size:14px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:15px;transition:background .25s,transform .25s,box-shadow .25s}.primary-button:hover{background:var(--red-light);transform:translateY(-2px);box-shadow:0 12px 30px rgba(229,9,20,.2)}.primary-button:active{transform:translateY(0)}.primary-button strong{font-size:20px}
+        .error{width:100%;color:#ff5964;font-size:13px;margin-top:15px;text-align:center;line-height:1.5;overflow-wrap:anywhere}.result{margin-top:25px;animation:showResult .4s ease}.hidden{display:none}@keyframes showResult{from{opacity:0;transform:translateY(15px)}to{opacity:1;transform:translateY(0)}}
+        .result-header{display:flex;justify-content:space-between;align-items:flex-start;gap:20px}.result-header h3{margin-top:10px;font-size:22px}.quality-badge{padding:9px 14px;border-radius:50px;background:rgba(229,9,20,.12);color:var(--red-light);border:1px solid rgba(229,9,20,.25);font-size:11px;font-weight:800;white-space:nowrap}
+        .sleep-time{width:100%;margin:45px 0;display:flex;align-items:baseline;flex-wrap:wrap;gap:8px}.sleep-time span{font-size:clamp(60px,12vw,105px);line-height:.9;font-weight:800;letter-spacing:clamp(-5px,-.5vw,-2px)}.sleep-time small{color:var(--gray);font-size:18px;margin-right:20px}
+        .quality{width:100%;display:flex;align-items:center;gap:15px;padding:18px;border-radius:14px;background:#0c0c0c;border:1px solid var(--border)}.quality-icon{width:45px;height:45px;min-width:45px;border-radius:12px;background:var(--red);display:flex;align-items:center;justify-content:center;font-weight:800}.quality span{display:block;color:var(--gray);font-size:11px;margin-bottom:5px}.quality strong{font-size:15px}
+        .new-calculation{max-width:100%;margin-top:20px;background:transparent;color:#bbb;border:1px solid var(--border);border-radius:10px;padding:12px 18px;cursor:pointer;font-family:inherit;transition:border-color .2s,color .2s}.new-calculation:hover{border-color:var(--red);color:white}
+        .food-grid{display:grid;grid-template-columns:1fr 1fr;gap:25px}.food-card h3,.summary-card h3{font-size:21px;margin-bottom:8px}.food-card>p,.summary-card>p{color:var(--gray);font-size:13px;line-height:1.5;margin-bottom:25px}.food-form{display:grid;grid-template-columns:1fr 150px;gap:15px}.food-form .full{grid-column:1/-1}
+        .food-list{margin-top:25px;border-top:1px solid var(--border);padding-top:20px}.food-item{display:flex;align-items:center;justify-content:space-between;gap:15px;padding:14px 0;border-bottom:1px solid #222}.food-item:last-child{border-bottom:0}.food-name{font-weight:700;font-size:14px}.food-meta{color:var(--gray);font-size:11px;margin-top:5px}.food-cal{font-weight:800;color:var(--red-light);white-space:nowrap}.empty{color:#666;font-size:13px;padding:10px 0}.delete-food{border:0;background:transparent;color:#777;cursor:pointer;font-size:12px;padding:5px}.delete-food:hover{color:var(--red-light)}
+        .totals{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}.total-box{background:#0c0c0c;border:1px solid var(--border);border-radius:14px;padding:18px}.total-box span{display:block;color:var(--gray);font-size:11px;margin-bottom:8px}.total-box strong{font-size:25px}.total-box small{color:var(--gray);font-size:11px}.total-box.main{grid-column:1/-1}.total-box.main strong{font-size:45px}.summary-stack{display:grid;gap:15px}.summary-line{display:flex;justify-content:space-between;align-items:center;gap:15px;padding:15px 0;border-bottom:1px solid var(--border)}.summary-line:last-child{border-bottom:0}.summary-line span{color:var(--gray);font-size:12px}.summary-line strong{font-size:15px}
+        footer{display:flex;justify-content:center;align-items:center;flex-wrap:wrap;gap:8px;color:#555;font-size:11px;text-align:center;margin-top:35px}footer span:first-child{color:var(--red);font-weight:700}
+        @media(max-width:800px){.container{width:min(calc(100% - 32px),700px)}.hero{gap:25px}.moon{width:120px;height:120px;min-width:120px}.moon::after{width:120px;height:120px;left:28px}.food-grid{grid-template-columns:1fr}}
+        @media(max-width:650px){.container{width:calc(100% - 24px);padding-top:22px}.header{margin-bottom:18px}.navbar{margin-bottom:35px}.hero{display:block;margin-bottom:35px}.hero-text{width:100%}.hero h2{font-size:clamp(40px,12vw,54px);letter-spacing:-2.5px;margin-top:14px}.hero p{font-size:13px;max-width:100%}.moon{display:none}.calculator,.result,.food-card,.summary-card{padding:20px;border-radius:17px}.section-title{gap:12px;margin-bottom:27px}.section-title h3{font-size:18px}.section-title p{font-size:12px}.fields{display:flex;flex-direction:column;align-items:stretch;gap:18px}.arrow{display:none}.field input,.field select{width:100%;height:55px;font-size:14px}.primary-button{min-height:55px;margin-top:22px;padding:12px 15px;font-size:13px}.result-header{flex-direction:column;align-items:flex-start;gap:15px}.result-header h3{font-size:19px}.quality-badge{font-size:10px}.sleep-time{margin:35px 0;gap:5px}.sleep-time span{font-size:clamp(58px,18vw,78px);letter-spacing:-3px}.sleep-time small{font-size:13px;margin-right:8px}.quality{padding:15px;gap:12px}.quality-icon{width:42px;height:42px;min-width:42px}.quality strong{font-size:14px}.new-calculation{width:100%;padding:12px}.food-form{grid-template-columns:1fr}.food-form .full{grid-column:auto}.totals{grid-template-columns:1fr 1fr}.total-box.main{grid-column:1/-1}.total-box.main strong{font-size:38px}footer{padding:0 10px;line-height:1.5}}
+        @media(max-width:380px){.container{width:calc(100% - 18px)}.calculator,.result,.food-card,.summary-card{padding:17px}.logo h1{font-size:16px}.logo p{font-size:10px}.hero h2{font-size:39px}.sleep-time span{font-size:54px;letter-spacing:-2px}}
     </style>
-
 </head>
-
-
 <body>
-
 <div class="container">
-
-
     <header class="header">
-
         <div class="logo">
-
-            <div class="logo-icon">
-                Z
-            </div>
-
-            <div>
-
-                <h1>
-                    Sleep<span>Tracker</span>
-                </h1>
-
-                <p>
-                    Seu sono, seus dados.
-                </p>
-
-            </div>
-
+            <div class="logo-icon">Z</div>
+            <div><h1>Sleep<span>Tracker</span></h1><p>Seu sono, seus dados.</p></div>
         </div>
-
     </header>
 
+    <nav class="navbar" aria-label="Navegação principal">
+        <button class="nav-btn active" data-page="sleepPage">Sono</button>
+        <button class="nav-btn" data-page="foodPage">Alimentação</button>
+        <button class="nav-btn" data-page="summaryPage">Resumo</button>
+    </nav>
 
-    <section class="hero">
-
-        <div class="hero-text">
-
-            <span class="tag">
-                MONITORAMENTO DO SONO
-            </span>
-
-            <h2>
-                Descubra quanto
-                <span>você dorme.</span>
-            </h2>
-
-            <p>
-                Informe seus horários de sono e descubra
-                automaticamente quanto tempo você dormiu.
-            </p>
-
-        </div>
-
-
-        <div class="moon"></div>
-
-    </section>
-
-
-    <section class="calculator">
-
-
-        <div class="section-title">
-
-            <span class="number">
-                01
-            </span>
-
-            <div>
-
-                <h3>
-                    Informe seus horários
-                </h3>
-
-                <p>
-                    Preencha os horários em que você dormiu e acordou.
-                </p>
-
-            </div>
-
-        </div>
-
-
-        <form id="sleepForm">
-
-
-            <div class="fields">
-
-
-                <div class="field">
-
-                    <label for="hourSleep">
-
-                        <span class="dot red"></span>
-
-                        Hora que dormiu
-
-                    </label>
-
-
-                    <input
-                            type="datetime-local"
-                            id="hourSleep"
-                            required
-                    >
-
+    <main>
+        <section id="sleepPage" class="page active">
+            <section class="hero">
+                <div class="hero-text">
+                    <span class="tag">MONITORAMENTO DO SONO</span>
+                    <h2>Descubra quanto <span>você dorme.</span></h2>
+                    <p>Informe seus horários de sono e descubra automaticamente quanto tempo você dormiu.</p>
                 </div>
+                <div class="moon"></div>
+            </section>
 
+            <section class="calculator">
+                <div class="section-title"><span class="number">01</span><div><h3>Informe seus horários</h3><p>Preencha os horários em que você dormiu e acordou.</p></div></div>
+                <form id="sleepForm">
+                    <div class="fields">
+                        <div class="field"><label for="hourSleep"><span class="dot red"></span>Hora que dormiu</label><input type="datetime-local" id="hourSleep" required></div>
+                        <div class="arrow">→</div>
+                        <div class="field"><label for="hourWake"><span class="dot white"></span>Hora que acordou</label><input type="datetime-local" id="hourWake" required></div>
+                    </div>
+                    <button type="submit" class="primary-button" id="calculateButton"><span>Calcular meu sono</span><strong>→</strong></button>
+                </form>
+                <div id="error" class="error"></div>
+            </section>
 
-                <div class="arrow">
-                    →
+            <section id="result" class="result hidden">
+                <div class="result-header"><div><span class="tag">RESULTADO</span><h3>Seu período de sono</h3></div><div id="qualityBadge" class="quality-badge">—</div></div>
+                <div class="sleep-time"><span id="hours">00</span><small>h</small><span id="minutes">00</span><small>min</small></div>
+                <div class="quality"><div class="quality-icon" id="qualityIcon">Z</div><div><span>Qualidade do sono</span><strong id="qualityText">—</strong></div></div>
+                <button class="new-calculation" onclick="newCalculation()">Fazer novo cálculo</button>
+            </section>
+        </section>
+
+        <section id="foodPage" class="page">
+            <section class="hero">
+                <div class="hero-text">
+                    <span class="tag">REGISTRO DE ALIMENTAÇÃO</span>
+                    <h2>Registre suas <span>refeições.</span></h2>
+                    <p>Adicione os alimentos consumidos e acompanhe os valores nutricionais registrados no dia.</p>
                 </div>
+                <div class="moon"></div>
+            </section>
 
+            <div class="food-grid">
+                <section class="food-card">
+                    <div class="section-title"><span class="number">01</span><div><h3>Adicionar alimento</h3><p>Registre um alimento e seus valores nutricionais.</p></div></div>
+                    <form id="foodForm">
+                        <div class="field full"><label for="foodName"><span class="dot red"></span>Alimento</label><input id="foodName" type="text" placeholder="Ex.: Arroz" required></div>
+                        <div class="field"><label for="foodCalories"><span class="dot red"></span>Calorias (kcal)</label><input id="foodCalories" type="number" min="0" step="1" placeholder="Ex.: 200" required></div>
+                        <div class="field"><label for="foodQuantity"><span class="dot white"></span>Quantidade</label><input id="foodQuantity" type="text" placeholder="Ex.: 1 porção"></div>
+                        <button type="submit" class="primary-button full"><span>Adicionar alimento</span><strong>+</strong></button>
+                    </form>
+                    <div id="foodError" class="error"></div>
+                </section>
 
-                <div class="field">
+                <section class="food-card">
+                    <div class="section-title"><span class="number">02</span><div><h3>Alimentos registrados</h3><p>Os registros são mantidos pelo serviço de alimentação do projeto.</p></div></div>
+                    <div id="foodList" class="food-list"><div class="empty">Nenhum alimento registrado ainda.</div></div>
+                </section>
+            </div>
 
-                    <label for="hourWake">
+            <section class="summary-card" style="margin-top:25px">
+                <div class="section-title"><span class="number">03</span><div><h3>Total registrado</h3><p>Soma das calorias dos alimentos adicionados.</p></div></div>
+                <div class="totals"><div class="total-box main"><span>CALORIAS REGISTRADAS</span><strong id="foodTotal">0</strong> <small>kcal</small></div></div>
+            </section>
+        </section>
 
-                        <span class="dot white"></span>
-
-                        Hora que acordou
-
-                    </label>
-
-
-                    <input
-                            type="datetime-local"
-                            id="hourWake"
-                            required
-                    >
-
+        <section id="summaryPage" class="page">
+            <section class="hero">
+                <div class="hero-text">
+                    <span class="tag">VISÃO GERAL</span>
+                    <h2>Seu dia em <span>um só lugar.</span></h2>
+                    <p>Veja o resultado do sono e o total de alimentação registrado nas outras áreas.</p>
                 </div>
-
-
+                <div class="moon"></div>
+            </section>
+            <div class="summary-stack">
+                <section class="summary-card">
+                    <h3>Resumo do sono</h3>
+                    <p>Último cálculo realizado nesta sessão.</p>
+                    <div class="summary-line"><span>Tempo de sono</span><strong id="summarySleep">—</strong></div>
+                    <div class="summary-line"><span>Qualidade</span><strong id="summaryQuality">—</strong></div>
+                </section>
+                <section class="summary-card">
+                    <h3>Resumo da alimentação</h3>
+                    <p>Total dos alimentos registrados pelo sistema.</p>
+                    <div class="summary-line"><span>Calorias registradas</span><strong><span id="summaryCalories">0</span> kcal</strong></div>
+                    <div class="summary-line"><span>Quantidade de alimentos</span><strong id="summaryFoodCount">0</strong></div>
+                </section>
             </div>
+        </section>
+    </main>
 
-
-            <button
-                    type="submit"
-                    id="calculateButton"
-            >
-
-                <span>
-                    Calcular meu sono
-                </span>
-
-                <strong>
-                    →
-                </strong>
-
-            </button>
-
-
-        </form>
-
-
-        <div
-                id="error"
-                class="error"
-        ></div>
-
-
-    </section>
-
-
-    <section
-            id="result"
-            class="result hidden"
-    >
-
-
-        <div class="result-header">
-
-            <div>
-
-                <span class="tag">
-                    RESULTADO
-                </span>
-
-                <h3>
-                    Seu período de sono
-                </h3>
-
-            </div>
-
-
-            <div
-                    id="qualityBadge"
-                    class="quality-badge"
-            >
-                —
-            </div>
-
-        </div>
-
-
-        <div class="sleep-time">
-
-            <span id="hours">
-                00
-            </span>
-
-            <small>
-                h
-            </small>
-
-
-            <span id="minutes">
-                00
-            </span>
-
-            <small>
-                min
-            </small>
-
-        </div>
-
-
-        <div class="quality">
-
-            <div
-                    class="quality-icon"
-                    id="qualityIcon"
-            >
-                Z
-            </div>
-
-
-            <div>
-
-                <span>
-                    Qualidade do sono
-                </span>
-
-                <strong id="qualityText">
-                    —
-                </strong>
-
-            </div>
-
-        </div>
-
-
-        <button
-                class="new-calculation"
-                onclick="newCalculation()"
-        >
-            Fazer novo cálculo
-        </button>
-
-
-    </section>
-
-
-    <footer>
-
-        <span>
-            SleepTracker
-        </span>
-
-        <span>
-            •
-        </span>
-
-        <span>
-            Monitoramento pessoal do sono
-        </span>
-
-    </footer>
-
-
+    <footer><span>SleepTracker</span><span>•</span><span>Monitoramento pessoal do sono e alimentação</span></footer>
 </div>
 
-
 <script>
-
-    const form =
-        document.getElementById("sleepForm");
-
-    const result =
-        document.getElementById("result");
-
-    const error =
-        document.getElementById("error");
-
-    const hoursElement =
-        document.getElementById("hours");
-
-    const minutesElement =
-        document.getElementById("minutes");
-
-    const qualityText =
-        document.getElementById("qualityText");
-
-    const qualityBadge =
-        document.getElementById("qualityBadge");
-
-
-    form.addEventListener(
-        "submit",
-        async function(event) {
-
-            event.preventDefault();
-
-            error.textContent = "";
-
-            result.classList.add("hidden");
-
-
-            const hourSleep =
-                document
-                    .getElementById("hourSleep")
-                    .value;
-
-            const hourWake =
-                document
-                    .getElementById("hourWake")
-                    .value;
-
-
-            if (!hourSleep || !hourWake) {
-
-                error.textContent =
-                    "Informe os dois horários.";
-
-                return;
-            }
-
-
-            const sleep =
-                new Date(hourSleep);
-
-            const wake =
-                new Date(hourWake);
-
-
-            /*
-             * Acordou antes ou exatamente
-             * no momento em que dormiu.
-             */
-
-            if (
-                wake.getTime() <=
-                sleep.getTime()
-            ) {
-
-                error.textContent =
-                    "A data e o horário em que você acordou devem ser posteriores ao momento em que dormiu.";
-
-                return;
-            }
-
-
-            /*
-             * Calcula a diferença real
-             * entre as duas datas.
-             */
-
-            const difference =
-                wake.getTime() -
-                sleep.getTime();
-
-
-            const totalMinutes =
-                Math.floor(
-                    difference /
-                    (1000 * 60)
-                );
-
-
-            const hours =
-                Math.floor(
-                    totalMinutes / 60
-                );
-
-
-            const minutes =
-                totalMinutes % 60;
-
-
-            showResult(
-                hours,
-                minutes
-            );
-
-
-            /*
-             * Envia os dados para o Java.
-             */
-
-            try {
-
-                const response =
-                    await fetch(
-                        "/user/sleep",
-                        {
-                            method: "POST",
-
-                            headers: {
-                                "Content-Type":
-                                    "application/json"
-                            },
-
-                            body:
-                                JSON.stringify({
-
-                                    hourSleep:
-                                    hourSleep,
-
-                                    hourWake:
-                                    hourWake
-
-                                })
-                        }
-                    );
-
-
-                /*
-                 * O cálculo visual continua funcionando,
-                 * mas mostramos no console se o backend
-                 * rejeitar os dados.
-                 */
-
-                if (!response.ok) {
-
-                    const message =
-                        await response.text();
-
-                    console.log(
-                        "Backend retornou:",
-                        response.status,
-                        message
-                    );
-
-                }
-
-            } catch (err) {
-
-                console.log(
-                    "Erro ao enviar para o backend:",
-                    err
-                );
-
-            }
-
-        }
-    );
-
-
-    function showResult(
-        hours,
-        minutes
-    ) {
-
-        hoursElement.textContent =
-            String(hours)
-                .padStart(2, "0");
-
-
-        minutesElement.textContent =
-            String(minutes)
-                .padStart(2, "0");
-
-
-        let quality;
-
-
-        if (
-            hours >= 0 &&
-            hours <= 3
-        ) {
-
-            quality = "RUIM";
-
-        }
-
-        else if (
-            hours > 3 &&
-            hours <= 7
-        ) {
-
-            quality = "MEDIO";
-
-        }
-
-        else if (
-            hours >= 8 &&
-            hours <= 10
-        ) {
-
-            quality = "BOM";
-
-        }
-
-        else {
-
-            quality = "MARAVILHOSO";
-
-        }
-
-
-        const names = {
-
-            RUIM: "Ruim",
-
-            MEDIO: "Médio",
-
-            BOM: "Bom",
-
-            MARAVILHOSO: "Maravilhoso"
-
-        };
-
-
-        qualityText.textContent =
-            names[quality];
-
-
-        qualityBadge.textContent =
-            names[quality];
-
-
-        result.classList.remove(
-            "hidden"
-        );
-
-
-        result.scrollIntoView({
-
-            behavior: "smooth",
-
-            block: "start"
-
+    const form = document.getElementById("sleepForm");
+    const result = document.getElementById("result");
+    const error = document.getElementById("error");
+    const hoursElement = document.getElementById("hours");
+    const minutesElement = document.getElementById("minutes");
+    const qualityText = document.getElementById("qualityText");
+    const qualityBadge = document.getElementById("qualityBadge");
+    let lastSleep = null;
+    let foods = [];
+
+    document.querySelectorAll(".nav-btn").forEach(button => {
+        button.addEventListener("click", () => {
+            document.querySelectorAll(".nav-btn").forEach(btn => btn.classList.remove("active"));
+            document.querySelectorAll(".page").forEach(page => page.classList.remove("active"));
+            button.classList.add("active");
+            document.getElementById(button.dataset.page).classList.add("active");
+            if (button.dataset.page === "foodPage" || button.dataset.page === "summaryPage") loadFoods();
+            if (button.dataset.page === "summaryPage") updateSummary();
+            window.scrollTo({top:0,behavior:"smooth"});
         });
+    });
 
+    form.addEventListener("submit", async function(event) {
+        event.preventDefault(); error.textContent = ""; result.classList.add("hidden");
+        const hourSleep = document.getElementById("hourSleep").value;
+        const hourWake = document.getElementById("hourWake").value;
+        if (!hourSleep || !hourWake) { error.textContent = "Informe os dois horários."; return; }
+        const sleep = new Date(hourSleep), wake = new Date(hourWake);
+        if (wake.getTime() <= sleep.getTime()) { error.textContent = "A data e o horário em que você acordou devem ser posteriores ao momento em que dormiu."; return; }
+        const totalMinutes = Math.floor((wake.getTime()-sleep.getTime())/(1000*60));
+        const hours = Math.floor(totalMinutes/60), minutes = totalMinutes%60;
+        showResult(hours, minutes);
+        try {
+            const response = await fetch("/user/sleep", {method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({hourSleep,hourWake})});
+            if (!response.ok) console.log("Backend retornou:", response.status, await response.text());
+        } catch (err) { console.log("Erro ao enviar para o backend:", err); }
+    });
+
+    function showResult(hours, minutes) {
+        hoursElement.textContent = String(hours).padStart(2,"0");
+        minutesElement.textContent = String(minutes).padStart(2,"0");
+        let quality = hours <= 3 ? "Ruim" : hours <= 7 ? "Médio" : hours <= 10 ? "Bom" : "Maravilhoso";
+        qualityText.textContent = quality; qualityBadge.textContent = quality;
+        lastSleep = {hours, minutes, quality}; updateSummary(); result.classList.remove("hidden");
+        result.scrollIntoView({behavior:"smooth",block:"start"});
     }
 
+    function newCalculation() { form.reset(); result.classList.add("hidden"); error.textContent=""; document.getElementById("hourSleep").focus(); window.scrollTo({top:0,behavior:"smooth"}); }
 
-    function newCalculation() {
+    document.getElementById("foodForm").addEventListener("submit", async function(event) {
+        event.preventDefault();
+        const name = document.getElementById("foodName").value.trim();
+        const calouries = Number(document.getElementById("foodCalories").value);
+        const quantity = document.getElementById("foodQuantity").value.trim();
+        const foodError = document.getElementById("foodError");
+        foodError.textContent = "";
+        if (!name || !Number.isFinite(calouries) || calouries < 0) { foodError.textContent = "Informe o alimento e uma quantidade válida de calorias."; return; }
+        try {
+            const response = await fetch("/user/calouries", {method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({food:name,calouries:Math.round(calouries)})});
+            if (!response.ok) throw new Error("Falha ao registrar alimento");
+            document.getElementById("foodForm").reset();
+            await loadFoods();
+        } catch (err) {
+            foodError.textContent = "Não foi possível registrar no backend. O registro local será mantido.";
+            foods.push({name,hour:new Date().toLocaleTimeString("pt-BR",{hour:"2-digit",minute:"2-digit"}),calouries:Math.round(calouries),quantity});
+            renderFoods();
+        }
+    });
 
-        form.reset();
-
-        result.classList.add(
-            "hidden"
-        );
-
-        error.textContent = "";
-
-        document
-            .getElementById("hourSleep")
-            .focus();
-
-
-        window.scrollTo({
-
-            top: 0,
-
-            behavior: "smooth"
-
-        });
-
+    async function loadFoods() {
+        try {
+            const response = await fetch("/user/calouries/list");
+            if (!response.ok) throw new Error("endpoint indisponível");
+            foods = await response.json();
+            renderFoods();
+        } catch (err) {
+            renderFoods();
+        }
+        updateSummary();
     }
 
+    function renderFoods() {
+        const list = document.getElementById("foodList");
+        if (!foods.length) { list.innerHTML = '<div class="empty">Nenhum alimento registrado ainda.</div>'; document.getElementById("foodTotal").textContent="0"; return; }
+        list.innerHTML = foods.map((food,index) => `
+            <div class="food-item">
+                <div><div class="food-name">${escapeHtml(food.name || "Alimento")}</div><div class="food-meta">${food.hour || ""}${food.quantity ? " • " + escapeHtml(food.quantity) : ""}</div></div>
+                <div style="display:flex;align-items:center;gap:10px"><span class="food-cal">${Number(food.calouries)||0} kcal</span><button class="delete-food" onclick="removeLocalFood(${index})" title="Remover da visualização">✕</button></div>
+            </div>`).join("");
+        document.getElementById("foodTotal").textContent = foods.reduce((sum,food)=>sum+(Number(food.calouries)||0),0);
+    }
+
+    function removeLocalFood(index) { foods.splice(index,1); renderFoods(); updateSummary(); }
+    function updateSummary() {
+        document.getElementById("summarySleep").textContent = lastSleep ? `${String(lastSleep.hours).padStart(2,"0")}h ${String(lastSleep.minutes).padStart(2,"0")}min` : "—";
+        document.getElementById("summaryQuality").textContent = lastSleep ? lastSleep.quality : "—";
+        document.getElementById("summaryCalories").textContent = foods.reduce((sum,food)=>sum+(Number(food.calouries)||0),0);
+        document.getElementById("summaryFoodCount").textContent = foods.length;
+    }
+    function escapeHtml(value) { return String(value).replace(/[&<>'"]/g, char => ({"&":"&amp;","<":"&lt;",">":"&gt;","'":"&#39;",'"':"&quot;"}[char])); }
+
+    loadFoods();
 </script>
-
-
 </body>
-
 </html>
-
