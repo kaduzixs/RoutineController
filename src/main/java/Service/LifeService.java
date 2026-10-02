@@ -40,6 +40,15 @@ public class LifeService{
     }
 
 
+    public int somarCalorias() {
+        int total = 0;
+        for (Refeicao refeicao : refeicoes) {
+            total += refeicao.getCalouries();
+        }
+
+        return total;
+    }
+
     
 
 

@@ -36,9 +36,15 @@ public class SleepController{
     public String calouries(@RequestBody LifeDto life){
         String TypeFood = life.getFood();
         int calouries = life.getCalouries();
-        LocalTime hours = Refeicao.getHour();
+        LocalTime hours = LocalTime.now();
+        Refeicao refeicao = new Refeicao(TypeFood, hours, calouries);
         lifeService.addRefeicao(refeicao);
-        return "Food: "+TypeFood+"Calouries: "+calouries;
+        return "Food: "+TypeFood+"Calouries: "+calouries+"Hours: "+hours;
+    }
+
+    @GetMapping("/calouries/total")
+    public int totalCalorias() {
+        return lifeService.somarCalorias();
     }
 
 }
