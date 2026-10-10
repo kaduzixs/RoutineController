@@ -57,6 +57,7 @@
     <nav class="navbar" aria-label="Navegação principal">
         <button class="nav-btn active" data-page="sleepPage">Sono</button>
         <button class="nav-btn" data-page="foodPage">Alimentação</button>
+        <button class="nav-btn" data-page="exercisePage">Exercícios</button>
         <button class="nav-btn" data-page="summaryPage">Resumo</button>
     </nav>
 
@@ -126,6 +127,35 @@
             </section>
         </section>
 
+
+        <section id="exercisePage" class="page">
+            <section class="hero">
+                <div class="hero-text">
+                    <span class="tag">REGISTRO DE TREINOS</span>
+                    <h2>Registre seus <span>exercícios.</span></h2>
+                    <p>Adicione os exercícios realizados e acompanhe suas repetições, sem cálculo de total.</p>
+                </div>
+                <div class="moon"></div>
+            </section>
+
+            <div class="food-grid">
+                <section class="food-card">
+                    <div class="section-title"><span class="number">01</span><div><h3>Adicionar exercício</h3><p>Informe o exercício e a quantidade de repetições.</p></div></div>
+                    <form id="exerciseForm">
+                        <div class="field full"><label for="exerciseName"><span class="dot red"></span>Exercício</label><input id="exerciseName" type="text" placeholder="Ex.: Agachamento" required></div>
+                        <div class="field full"><label for="exerciseRepeats"><span class="dot white"></span>Repetições</label><input id="exerciseRepeats" type="number" min="1" step="1" placeholder="Ex.: 12" required></div>
+                        <button type="submit" class="primary-button full"><span>Adicionar exercício</span><strong>+</strong></button>
+                    </form>
+                    <div id="exerciseError" class="error"></div>
+                </section>
+
+                <section class="food-card">
+                    <div class="section-title"><span class="number">02</span><div><h3>Exercícios registrados</h3><p>Veja os exercícios adicionados ao seu treino.</p></div></div>
+                    <div id="exerciseList" class="food-list"><div class="empty">Nenhum exercício registrado ainda.</div></div>
+                </section>
+            </div>
+        </section>
+
         <section id="summaryPage" class="page">
             <section class="hero">
                 <div class="hero-text">
@@ -165,6 +195,7 @@
     const qualityBadge = document.getElementById("qualityBadge");
     let lastSleep = null;
     let foods = [];
+    let exercises = [];
 
     document.querySelectorAll(".nav-btn").forEach(button => {
         button.addEventListener("click", () => {
@@ -173,6 +204,7 @@
             button.classList.add("active");
             document.getElementById(button.dataset.page).classList.add("active");
             if (button.dataset.page === "foodPage" || button.dataset.page === "summaryPage") loadFoods();
+            if (button.dataset.page === "exercisePage") loadExercises();
             if (button.dataset.page === "summaryPage") updateSummary();
             window.scrollTo({top:0,behavior:"smooth"});
         });
@@ -255,9 +287,68 @@
         document.getElementById("summaryCalories").textContent = foods.reduce((sum,food)=>sum+(Number(food.calouries)||0),0);
         document.getElementById("summaryFoodCount").textContent = foods.length;
     }
+
+    document.getElementById("exerciseForm").addEventListener("submit", async function(event) {
+        event.preventDefault();
+        const name = document.getElementById("exerciseName").value.trim();
+        const repeats = Number(document.getElementById("exerciseRepeats").value);
+        const exerciseError = document.getElementById("exerciseError");
+        exerciseError.textContent = "";
+
+        if (!name || !Number.isInteger(repeats) || repeats < 1) {
+            exerciseError.textContent = "Informe o exercício e uma quantidade válida de repetições.";
+            return;
+        }
+
+        try {
+            const response = await fetch("/user/exercice", {
+                method: "POST",
+                headers: {"Content-Type": "application/json"},
+                body: JSON.stringify({exercice: name, reapets: repeats})
+            });
+            if (!response.ok) throw new Error("Falha ao registrar exercício");
+            document.getElementById("exerciseForm").reset();
+            await loadExercises();
+        } catch (err) {
+            exerciseError.textContent = "Não foi possível registrar no backend. O exercício será mantido apenas nesta sessão.";
+            exercises.push({exercice: name, repeats: repeats});
+            renderExercises();
+            document.getElementById("exerciseForm").reset();
+        }
+    });
+
+    async function loadExercises() {
+        try {
+            const response = await fetch("/user/exercice");
+            if (!response.ok) throw new Error("endpoint indisponível");
+            exercises = await response.json();
+            if (!Array.isArray(exercises)) exercises = [];
+        } catch (err) {
+            // Mantém na tela os registros locais caso a API de listagem não esteja disponível.
+        }
+        renderExercises();
+    }
+
+    function renderExercises() {
+        const list = document.getElementById("exerciseList");
+        if (!exercises.length) {
+            list.innerHTML = '<div class="empty">Nenhum exercício registrado ainda.</div>';
+            return;
+        }
+        list.innerHTML = exercises.map(exercise => `
+            <div class="food-item">
+                <div>
+                    <div class="food-name">${escapeHtml(exercise.exercice || exercise.exercise || "Exercício")}</div>
+                    <div class="food-meta">Treino registrado</div>
+                </div>
+                <span class="food-cal">${Number(exercise.repeats ?? exercise.reapets) || 0} repetições</span>
+            </div>`).join("");
+    }
+
     function escapeHtml(value) { return String(value).replace(/[&<>'"]/g, char => ({"&":"&amp;","<":"&lt;",">":"&gt;","'":"&#39;",'"':"&quot;"}[char])); }
 
     loadFoods();
+    loadExercises();
 </script>
 </body>
 </html>
