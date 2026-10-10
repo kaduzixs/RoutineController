@@ -1,9 +1,12 @@
 package Controller;
 
 
+import DTO.ExerciceDto;
 import DTO.LifeDto;
 import DTO.SleepDto;
+import Models.Exercice;
 import Models.Refeicao;
+import Service.ExerciceService;
 import Service.LifeService;
 import Service.SleepService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.List;
 
 
 @RestController
@@ -23,6 +27,9 @@ public class SleepController{
 
     @Autowired
     private LifeService lifeService;
+
+    @Autowired
+    private ExerciceService exerciceService;
 
     @PostMapping("/sleep")
     public Duration sleep(@RequestBody SleepDto dto){
@@ -45,6 +52,19 @@ public class SleepController{
     @GetMapping("/calouries/total")
     public int totalCalorias() {
         return lifeService.somarCalorias();
+    }
+
+    @PostMapping("/exercice")
+    public String exercices(@RequestBody ExerciceDto exercice){
+        String TypeExercice = exercice.getExercice();
+        int reapets = exercice.getReapets();
+        Exercice traine = new Exercice(TypeExercice, reapets);
+        exerciceService.addExercice(traine);
+        return "Exercice: "+ TypeExercice+ "Repeats: "+reapets;
+    }
+    @GetMapping("/exercice")
+    public List<Exercice> listExercices() {
+        return exerciceService.listExercices();
     }
 
 }
