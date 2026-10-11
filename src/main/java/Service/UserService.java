@@ -22,9 +22,6 @@ public class UserService {
 
         User usuarioSalvo = userRepository.save(new User(email, password));
 
-        String accountNumber = String.valueOf(usuarioSalvo.getId());
-
-
 
         return true;
     }

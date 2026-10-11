@@ -1,36 +1,29 @@
+
 package Service;
 
-
-import Models.Exercice;
-import Models.Refeicao;
-import org.springframework.scheduling.annotation.Scheduled;
+import Repository.Exercice;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Service
 public class ExerciceService {
-    String exercice;
-    int reapets;
 
-    private final List<Exercice> traine = new ArrayList<>();
+    private final Exercice exerciceRepository;
 
-
-    public void _contruct(String exercice,  int reapets){
-        this.exercice = exercice;
-        this.reapets = reapets;
+    public ExerciceService(Exercice exerciceRepository) {
+        this.exerciceRepository = exerciceRepository;
     }
 
-    public List<Exercice> listExercices(){return traine;}
-
-
-    public void addExercice(Exercice exercice) {
-        traine.add(exercice);
+    public List<Models.Exercice> listar() {
+        return exerciceRepository.findAll();
     }
 
-    @Scheduled(cron = "0 0 0 * * *")
-    public void resetTraine() {
-        traine.clear();
+    public Models.Exercice addExercice(Models.Exercice exercice) {
+        return exerciceRepository.save(exercice);
+    }
+
+    public Models.Exercice salvar(Models.Exercice exercice) {
+        return exerciceRepository.save(exercice);
     }
 }
