@@ -1,20 +1,24 @@
-package Repository;
 
+package Repository;
 
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+
+import java.time.LocalDateTime;
+
 
 @Getter
 @Setter
 @Entity
 @Table(name = "exercices")
 public class Exercice {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false, unique = true)
+    @Column(nullable = false)
     private String name;
 
     @Column(nullable = false)
@@ -23,11 +27,25 @@ public class Exercice {
     @Column(nullable = false)
     private String traine;
 
-    public Exercice(){}
+    @Column(name = "created_at")
+    private LocalDateTime createdAt;
 
-    public Exercice(String name, int repeat, String traine){
+    public Exercice() {
+    }
+
+    public Exercice(String name, int repeat, String traine) {
         this.name = name;
         this.repeat = repeat;
         this.traine = traine;
+        this.createdAt = LocalDateTime.now();
     }
+
+    @PrePersist
+    public void antesDeSalvar() {
+        if (createdAt == null) {
+            createdAt = LocalDateTime.now();
+        }
+    }
+
+
 }

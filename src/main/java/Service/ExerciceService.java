@@ -1,29 +1,50 @@
 
 package Service;
 
-import Repository.Exercice;
+import Models.Exercice;
+import Repository.ExerciceRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.scheduling.annotation.Scheduled;
+import jakarta.annotation.PostConstruct;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
 public class ExerciceService {
 
-    private final Exercice exerciceRepository;
+    private final ExerciceRepository exerciceRepository;
 
-    public ExerciceService(Exercice exerciceRepository) {
+    public ExerciceService(ExerciceRepository exerciceRepository) {
         this.exerciceRepository = exerciceRepository;
     }
 
-    public List<Models.Exercice> listar() {
-        return exerciceRepository.findAll();
+    public List<Exercice> listar() {
+        return exerciceRepository.findAll().stream().map(ExerciceService::toModel).toList();
     }
 
-    public Models.Exercice addExercice(Models.Exercice exercice) {
-        return exerciceRepository.save(exercice);
+    public Exercice addExercice(Exercice exercice) {
+        Repository.Exercice entity = new Repository.Exercice(exercice.getExercice(), exercice.getRepeats(), "");
+
+        return toModel(exerciceRepository.save(entity));
     }
 
-    public Models.Exercice salvar(Models.Exercice exercice) {
-        return exerciceRepository.save(exercice);
+    public Exercice salvar(Exercice exercice) {
+        return addExercice(exercice);
+    }
+
+    private static Exercice toModel(Repository.Exercice entity) {
+        return new Exercice(entity.getName(),entity.getRepeat());
+    }
+
+    @PostConstruct
+    public void limparExpiradosAoIniciar() {
+        limparExpirados();
+    }
+
+    @Scheduled(fixedDelay = 60000)
+    public void limparExpirados() {
+        LocalDateTime limite = LocalDateTime.now().minusHours(24);
+        exerciceRepository.deleteByCreatedAtBefore(limite);
     }
 }

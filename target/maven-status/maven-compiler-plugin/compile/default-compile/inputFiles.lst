@@ -1,4 +1,16 @@
 /home/joao/Documentos/RoutineController/src/main/java/Controller/SleepController.java
+/home/joao/Documentos/RoutineController/src/main/java/Controller/UserController.java
+/home/joao/Documentos/RoutineController/src/main/java/DTO/ExerciceDto.java
+/home/joao/Documentos/RoutineController/src/main/java/DTO/LifeDto.java
 /home/joao/Documentos/RoutineController/src/main/java/DTO/SleepDto.java
+/home/joao/Documentos/RoutineController/src/main/java/Models/Exercice.java
+/home/joao/Documentos/RoutineController/src/main/java/Models/Refeicao.java
+/home/joao/Documentos/RoutineController/src/main/java/Repository/Exercice.java
+/home/joao/Documentos/RoutineController/src/main/java/Repository/ExerciceRepository.java
+/home/joao/Documentos/RoutineController/src/main/java/Repository/User.java
+/home/joao/Documentos/RoutineController/src/main/java/Repository/UserRepository.java
+/home/joao/Documentos/RoutineController/src/main/java/Service/ExerciceService.java
+/home/joao/Documentos/RoutineController/src/main/java/Service/LifeService.java
 /home/joao/Documentos/RoutineController/src/main/java/Service/SleepService.java
+/home/joao/Documentos/RoutineController/src/main/java/Service/UserService.java
 /home/joao/Documentos/RoutineController/src/main/java/routine/controller/many/ManyApplication.java

@@ -2,14 +2,17 @@ package routine.controller.many;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.scheduling.annotation.EnableScheduling;
 
-@SpringBootApplication
+@SpringBootApplication(
+		scanBasePackages = {"routine.controller.many", "Controller", "Service"}
+)
+@EnableJpaRepositories(basePackages = "Repository")
 @EnableScheduling
 public class ManyApplication {
 
 	public static void main(String[] args) {
 		SpringApplication.run(ManyApplication.class, args);
 	}
-
 }
