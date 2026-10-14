@@ -1,0 +1,17 @@
+Repository/Exercice.class
+Service/UserService.class
+Service/SleepService$Qualite.class
+DTO/ExerciceDto.class
+Service/ExerciceService.class
+routine/controller/many/ManyApplication.class
+Models/Refeicao.class
+Repository/UserRepository.class
+Repository/ExerciceRepository.class
+DTO/LifeDto.class
+Service/LifeService.class
+Service/SleepService.class
+Repository/User.class
+Controller/UserController.class
+Controller/SleepController.class
+DTO/SleepDto.class
+Models/Exercice.class

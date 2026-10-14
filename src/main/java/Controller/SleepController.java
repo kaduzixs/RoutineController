@@ -64,7 +64,7 @@ public class SleepController{
     }
     @GetMapping("/exercice")
     public List<Exercice> listExercices() {
-        return exerciceService.listExercices();
+        return exerciceService.listar();
     }
 
 }

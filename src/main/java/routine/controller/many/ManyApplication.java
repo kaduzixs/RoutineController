@@ -6,7 +6,14 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.scheduling.annotation.EnableScheduling;
 
 @SpringBootApplication(
-		scanBasePackages = {"routine.controller.many", "Controller", "Service"}
+		scanBasePackages = {
+				"routine.controller.many",
+				"Controller",
+				"Service",
+				"Repository",
+				"Models",
+				"DTO"
+		}
 )
 @EnableJpaRepositories(basePackages = "Repository")
 @EnableScheduling
