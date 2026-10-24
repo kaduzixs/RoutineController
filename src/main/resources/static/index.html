@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sleep Tracker | Acesso</title>
+    <title>Pegasus | Acesso</title>
 
     <style>
         * {
@@ -18,8 +18,8 @@
             justify-content: center;
             align-items: center;
             padding: 20px;
-            background: #090909;
-            color: #f5f5f5;
+            background: #ffffff;
+            color: #111111;
             font-family: Arial, sans-serif;
         }
 
@@ -27,10 +27,10 @@
             width: 100%;
             max-width: 420px;
             padding: 32px;
-            background: #151515;
-            border: 1px solid #292929;
+            background: #ffffff;
+            border: 1px solid #d4af37;
             border-radius: 16px;
-            box-shadow: 0 15px 50px #0008;
+            box-shadow: 0 15px 50px #0002;
         }
 
         h1 {
@@ -39,13 +39,13 @@
         }
 
         h1 span {
-            color: #ef4444;
+            color: #b8860b;
         }
 
         .subtitle {
             margin-bottom: 25px;
             text-align: center;
-            color: #aaa;
+            color: #666666;
         }
 
         .tabs {
@@ -56,33 +56,33 @@
 
         .tabs button {
             flex: 1;
-            background: #252525;
-            color: #ccc;
+            background: #f3f3f3;
+            color: #333333;
         }
 
         .tabs button.active {
-            background: #dc2626;
-            color: white;
+            background: #d4af37;
+            color: #111111;
         }
 
         label {
             display: block;
             margin: 16px 0 8px;
-            color: #ddd;
+            color: #333333;
         }
 
         input {
             width: 100%;
             padding: 13px;
-            border: 1px solid #393939;
+            border: 1px solid #d6d6d6;
             border-radius: 8px;
             outline: none;
-            background: #202020;
-            color: white;
+            background: #ffffff;
+            color: #111111;
         }
 
         input:focus {
-            border-color: #ef4444;
+            border-color: #b8860b;
         }
 
         button {
@@ -97,8 +97,8 @@
         .submit {
             width: 100%;
             margin-top: 24px;
-            background: #dc2626;
-            color: white;
+            background: #d4af37;
+            color: #111111;
         }
 
         button:hover {
@@ -115,12 +115,53 @@
         .hidden {
             display: none;
         }
+
+        /* Pegasus: tema preto com detalhes dourados */
+        body { background:#050505 !important; color:#f5f5f5 !important; }
+        .container { background:#101010 !important; border-color:#3a3016 !important; box-shadow:0 15px 50px #000a !important; }
+        h1 span { color:#d4af37 !important; }
+        .subtitle { color:#a3a3a3 !important; }
+        .tabs button { background:#1b1b1b !important; color:#ddd !important; }
+        .tabs button.active, .submit { background:#d4af37 !important; color:#111 !important; }
+        label { color:#ddd !important; }
+        input { background:#171717 !important; color:#f5f5f5 !important; border-color:#383838 !important; }
+        input:focus { border-color:#d4af37 !important; }
+        button:hover { filter:brightness(1.08); }
+        /* Acabamento visual Pegasus */
+        body{position:relative;overflow-x:hidden;background:radial-gradient(ellipse at 50% 0%,#201a0b 0%,#080808 48%,#030303 100%) !important;font-family:Inter,Arial,sans-serif}
+        body:before,body:after{content:"";position:fixed;pointer-events:none;z-index:0;border:1px solid rgba(212,175,55,.16);border-radius:50%;transform:rotate(-28deg)}
+        body:before{width:520px;height:760px;left:-330px;top:-180px;box-shadow:0 0 0 22px rgba(212,175,55,.025),0 0 0 45px rgba(212,175,55,.018)}
+        body:after{width:420px;height:700px;right:-300px;bottom:-220px;box-shadow:0 0 0 22px rgba(212,175,55,.025)}
+        .container{position:relative;z-index:1;max-width:460px;padding:36px 34px 32px;background:linear-gradient(145deg,rgba(20,20,20,.98),rgba(7,7,7,.98)) !important;border:1px solid rgba(212,175,55,.42) !important;border-radius:24px;box-shadow:0 25px 90px #000,0 0 45px rgba(212,175,55,.07) !important}
+        .brand-mark{display:flex;justify-content:center;align-items:center;margin:0 auto 8px;width:94px;height:82px;color:#e4bf53;filter:drop-shadow(0 6px 18px rgba(212,175,55,.18))}
+        .brand-mark svg{width:100%;height:100%}
+        h1{font-family:Georgia,'Times New Roman',serif;font-size:34px;letter-spacing:8px;color:#f3d77f;text-shadow:0 2px 24px rgba(212,175,55,.12);margin-bottom:10px}
+        .subtitle{font-size:12px;letter-spacing:2px;text-transform:uppercase;color:#a8a8a8 !important;margin-bottom:30px}
+        .tabs{padding:5px;border:1px solid #302817;border-radius:12px;background:#090909;gap:5px}
+        .tabs button{background:transparent !important;color:#bdbdbd !important;transition:all .2s}
+        .tabs button.active{background:linear-gradient(135deg,#f3d77f,#c49a2e) !important;color:#090909 !important;box-shadow:0 4px 18px rgba(212,175,55,.15)}
+        label{font-size:13px;font-weight:600;color:#e5e5e5 !important}
+        input{padding:15px 14px;border-radius:11px;background:#0b0b0b !important;border-color:#343434 !important;transition:border .2s,box-shadow .2s}
+        input:focus{border-color:#d4af37 !important;box-shadow:0 0 0 3px rgba(212,175,55,.1)}
+        .submit{min-height:51px;margin-top:27px;border-radius:11px;background:linear-gradient(135deg,#f4d77e,#c49a2e) !important;box-shadow:0 8px 24px rgba(212,175,55,.12);transition:transform .2s,box-shadow .2s}
+        .submit:hover{transform:translateY(-1px);box-shadow:0 12px 28px rgba(212,175,55,.2)}
+        #message{line-height:1.5}
+        @media(max-width:480px){.container{padding:28px 22px}.brand-mark{width:80px;height:70px}h1{font-size:28px;letter-spacing:6px}.subtitle{font-size:10px;letter-spacing:1.5px}}
+
     </style>
 </head>
 
 <body>
 <div class="container">
-    <h1>SLEEP <span>TRACKER</span></h1>
+    <div class="brand-mark" aria-label="Símbolo Pegasus" role="img">
+        <svg viewBox="0 0 120 100" xmlns="http://www.w3.org/2000/svg" fill="none" aria-hidden="true">
+            <path d="M17 58C31 51 38 39 40 18C52 29 61 43 60 58C71 48 78 34 77 16C93 32 99 49 91 65C85 78 72 84 61 87C68 77 70 68 67 59C57 71 45 81 29 85C36 75 37 67 34 61C29 65 23 67 17 68" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M63 60C70 48 80 39 93 37L105 44L97 49L94 61L86 69L82 83L74 83L76 69L68 69" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M83 37L89 28L96 35M96 35L105 33M42 27L27 12M51 40L31 30M57 51L37 47" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+            <circle cx="94" cy="43" r="1.8" fill="currentColor"/>
+        </svg>
+    </div>
+    <h1>PEGASUS</h1>
     <p class="subtitle">Sua rotina começa aqui.</p>
 
     <div class="tabs">
@@ -128,7 +169,7 @@
                 onclick="showForm('login')">Login</button>
 
         <button type="button" id="registerTab"
-                onclick="showForm('register')">Registro</button>
+                onclick="showForm('register')">Cadastro</button>
     </div>
 
     <form id="authForm">
@@ -238,7 +279,7 @@
                     "Cadastro realizado! Entre com seu e-mail e senha.";
             } else {
                 message.style.color = "#4ade80";
-                message.textContent = "Login realizado! Abrindo seu Sleep Tracker...";
+                message.textContent = "Login realizado! Abrindo seu Pegasus...";
 
                 // Mantém a sessão criada pelo backend e abre a página existente.
                 window.location.assign("/sleepTracker.html");

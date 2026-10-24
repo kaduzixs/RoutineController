@@ -3,54 +3,102 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SleepTracker</title>
+    <title>Pegasus</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
         *{margin:0;padding:0;box-sizing:border-box}
-        :root{--black:#070707;--black-light:#101010;--card:#151515;--red:#e50914;--red-light:#ff2633;--white:#f5f5f5;--gray:#8b8b8b;--border:#292929}
+        :root{--black:#ffffff;--black-light:#f5f5f5;--card:#ffffff;--red:#d4af37;--red-light:#b8860b;--white:#111111;--gray:#666666;--border:#ded3ad}
         html{scroll-behavior:smooth}
         body{min-height:100vh;width:100%;background:var(--black);color:var(--white);font-family:"Inter",sans-serif;overflow-x:hidden}
         body::before{content:"";position:fixed;width:450px;height:450px;background:var(--red);filter:blur(180px);opacity:.08;top:-250px;right:-150px;pointer-events:none;z-index:-1}
         .container{width:min(1050px,calc(100% - 40px));margin:0 auto;padding:28px 0 30px}
         .header{display:flex;align-items:center;justify-content:space-between;gap:25px;margin-bottom:25px}
         .logo{display:flex;align-items:center;gap:13px;min-width:0}
-        .logo-icon{width:43px;height:43px;min-width:43px;display:flex;justify-content:center;align-items:center;border-radius:12px;background:var(--red);font-size:20px;font-weight:800;box-shadow:0 0 30px rgba(229,9,20,.35)}
+        .logo-icon{width:43px;height:43px;min-width:43px;display:flex;justify-content:center;align-items:center;border-radius:12px;background:var(--red);font-size:20px;font-weight:800;box-shadow:0 0 30px rgba(212,175,55,.25)}
         .logo h1{font-size:18px;letter-spacing:-.5px}.logo h1 span{color:var(--red)}.logo p{color:var(--gray);font-size:11px;margin-top:2px}
-        .navbar{display:flex;gap:7px;padding:6px;background:#0e0e0e;border:1px solid var(--border);border-radius:14px;margin-bottom:50px;overflow-x:auto}
-        .nav-btn{border:0;background:transparent;color:#8f8f8f;padding:11px 17px;border-radius:9px;font-family:inherit;font-size:12px;font-weight:700;cursor:pointer;white-space:nowrap;transition:.2s}
-        .nav-btn:hover{color:white}.nav-btn.active{background:var(--red);color:white;box-shadow:0 8px 22px rgba(229,9,20,.18)}
+        .navbar{display:flex;gap:7px;padding:6px;background:#f7f7f7;border:1px solid var(--border);border-radius:14px;margin-bottom:50px;overflow-x:auto}
+        .nav-btn{border:0;background:transparent;color:#555555;padding:11px 17px;border-radius:9px;font-family:inherit;font-size:12px;font-weight:700;cursor:pointer;white-space:nowrap;transition:.2s}
+        .nav-btn:hover{color:#111}.nav-btn.active{background:var(--red);color:#111;box-shadow:0 8px 22px rgba(212,175,55,.22)}
         .page{display:none}.page.active{display:block}
         .hero{display:flex;justify-content:space-between;align-items:center;gap:50px;margin-bottom:clamp(35px,6vw,55px)}
-        .hero-text{max-width:650px;min-width:0}.tag{color:var(--red-light);font-size:11px;font-weight:800;letter-spacing:2px}.hero h2{font-size:clamp(42px,7vw,78px);line-height:.98;letter-spacing:clamp(-4px,-.4vw,-2px);margin:17px 0}.hero h2 span{display:block;color:var(--red)}.hero p{max-width:530px;color:var(--gray);font-size:15px;line-height:1.7}
-        .moon{width:150px;height:150px;min-width:150px;border-radius:50%;background:white;position:relative;box-shadow:0 0 70px rgba(255,255,255,.12)}.moon::after{content:"";position:absolute;width:150px;height:150px;background:var(--black);border-radius:50%;top:-20px;left:35px}
-        .calculator,.result,.food-card,.summary-card{width:100%;background:linear-gradient(145deg,#171717,#101010);border:1px solid var(--border);border-radius:22px;padding:clamp(22px,4vw,35px);box-shadow:0 20px 70px rgba(0,0,0,.25)}
+        .hero-text{max-width:650px;min-width:0}.tag{color:#8a6d00;font-size:11px;font-weight:800;letter-spacing:2px}.hero h2{font-size:clamp(42px,7vw,78px);line-height:.98;letter-spacing:clamp(-4px,-.4vw,-2px);margin:17px 0}.hero h2 span{display:block;color:var(--red)}.hero p{max-width:530px;color:var(--gray);font-size:15px;line-height:1.7}
+        .moon{width:150px;height:150px;min-width:150px;border-radius:50%;background:#d4af37;position:relative;box-shadow:0 0 70px rgba(212,175,55,.18)}.moon::after{content:"";position:absolute;width:150px;height:150px;background:var(--black);border-radius:50%;top:-20px;left:35px}
+        .calculator,.result,.food-card,.summary-card{width:100%;background:linear-gradient(145deg,#ffffff,#f8f8f8);border:1px solid var(--border);border-radius:22px;padding:clamp(22px,4vw,35px);box-shadow:0 20px 70px rgba(0,0,0,.25)}
         .section-title{display:flex;align-items:flex-start;gap:18px;margin-bottom:35px}.number{color:var(--red);font-size:13px;font-weight:800;flex-shrink:0}.section-title h3{font-size:21px;margin-bottom:7px}.section-title p{color:var(--gray);font-size:13px;line-height:1.5}
-        .fields{width:100%;display:grid;grid-template-columns:minmax(0,1fr) 40px minmax(0,1fr);align-items:end;gap:15px}.field{width:100%;min-width:0}.field label{display:flex;align-items:center;gap:8px;color:#cfcfcf;font-size:12px;margin-bottom:10px}.dot{width:7px;height:7px;min-width:7px;border-radius:50%}.dot.red{background:var(--red)}.dot.white{background:white}
-        .field input,.field select{display:block;width:100%;max-width:100%;height:58px;background:#0c0c0c;border:1px solid var(--border);border-radius:12px;color:white;padding:0 14px;font-family:inherit;font-size:14px;outline:none;transition:border-color .2s,box-shadow .2s}.field input:focus,.field select:focus{border-color:var(--red);box-shadow:0 0 0 3px rgba(229,9,20,.08)}.field input::-webkit-calendar-picker-indicator{filter:invert(1);cursor:pointer}.field select{appearance:auto}
+        .fields{width:100%;display:grid;grid-template-columns:minmax(0,1fr) 40px minmax(0,1fr);align-items:end;gap:15px}.field{width:100%;min-width:0}.field label{display:flex;align-items:center;gap:8px;color:#333333;font-size:12px;margin-bottom:10px}.dot{width:7px;height:7px;min-width:7px;border-radius:50%}.dot.red{background:var(--red)}.dot.white{background:white}
+        .field input,.field select{display:block;width:100%;max-width:100%;height:58px;background:#f7f7f7;border:1px solid var(--border);border-radius:12px;color:#111;padding:0 14px;font-family:inherit;font-size:14px;outline:none;transition:border-color .2s,box-shadow .2s}.field input:focus,.field select:focus{border-color:var(--red);box-shadow:0 0 0 3px rgba(212,175,55,.12)}.field input::-webkit-calendar-picker-indicator{filter:none;cursor:pointer}.field select{appearance:auto}
         .arrow{height:58px;display:flex;justify-content:center;align-items:center;color:var(--red);font-size:22px;flex-shrink:0}
-        .primary-button{width:100%;min-height:58px;border:0;border-radius:12px;margin-top:25px;padding:12px 20px;background:var(--red);color:white;font-family:inherit;font-size:14px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:15px;transition:background .25s,transform .25s,box-shadow .25s}.primary-button:hover{background:var(--red-light);transform:translateY(-2px);box-shadow:0 12px 30px rgba(229,9,20,.2)}.primary-button:active{transform:translateY(0)}.primary-button strong{font-size:20px}
-        .error{width:100%;color:#ff5964;font-size:13px;margin-top:15px;text-align:center;line-height:1.5;overflow-wrap:anywhere}.result{margin-top:25px;animation:showResult .4s ease}.hidden{display:none}@keyframes showResult{from{opacity:0;transform:translateY(15px)}to{opacity:1;transform:translateY(0)}}
-        .result-header{display:flex;justify-content:space-between;align-items:flex-start;gap:20px}.result-header h3{margin-top:10px;font-size:22px}.quality-badge{padding:9px 14px;border-radius:50px;background:rgba(229,9,20,.12);color:var(--red-light);border:1px solid rgba(229,9,20,.25);font-size:11px;font-weight:800;white-space:nowrap}
+        .primary-button{width:100%;min-height:58px;border:0;border-radius:12px;margin-top:25px;padding:12px 20px;background:var(--red);color:#111;font-family:inherit;font-size:14px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:15px;transition:background .25s,transform .25s,box-shadow .25s}.primary-button:hover{background:var(--red-light);transform:translateY(-2px);box-shadow:0 12px 30px rgba(212,175,55,.2)}.primary-button:active{transform:translateY(0)}.primary-button strong{font-size:20px}
+        .error{width:100%;color:#b91c1c;font-size:13px;margin-top:15px;text-align:center;line-height:1.5;overflow-wrap:anywhere}.result{margin-top:25px;animation:showResult .4s ease}.hidden{display:none}@keyframes showResult{from{opacity:0;transform:translateY(15px)}to{opacity:1;transform:translateY(0)}}
+        .result-header{display:flex;justify-content:space-between;align-items:flex-start;gap:20px}.result-header h3{margin-top:10px;font-size:22px}.quality-badge{padding:9px 14px;border-radius:50px;background:rgba(212,175,55,.15);color:#8a6d00;border:1px solid rgba(212,175,55,.4);font-size:11px;font-weight:800;white-space:nowrap}
         .sleep-time{width:100%;margin:45px 0;display:flex;align-items:baseline;flex-wrap:wrap;gap:8px}.sleep-time span{font-size:clamp(60px,12vw,105px);line-height:.9;font-weight:800;letter-spacing:clamp(-5px,-.5vw,-2px)}.sleep-time small{color:var(--gray);font-size:18px;margin-right:20px}
-        .quality{width:100%;display:flex;align-items:center;gap:15px;padding:18px;border-radius:14px;background:#0c0c0c;border:1px solid var(--border)}.quality-icon{width:45px;height:45px;min-width:45px;border-radius:12px;background:var(--red);display:flex;align-items:center;justify-content:center;font-weight:800}.quality span{display:block;color:var(--gray);font-size:11px;margin-bottom:5px}.quality strong{font-size:15px}
-        .new-calculation{max-width:100%;margin-top:20px;background:transparent;color:#bbb;border:1px solid var(--border);border-radius:10px;padding:12px 18px;cursor:pointer;font-family:inherit;transition:border-color .2s,color .2s}.new-calculation:hover{border-color:var(--red);color:white}
+        .quality{width:100%;display:flex;align-items:center;gap:15px;padding:18px;border-radius:14px;background:#f7f7f7;border:1px solid var(--border)}.quality-icon{width:45px;height:45px;min-width:45px;border-radius:12px;background:var(--red);display:flex;align-items:center;justify-content:center;font-weight:800}.quality span{display:block;color:var(--gray);font-size:11px;margin-bottom:5px}.quality strong{font-size:15px}
+        .new-calculation{max-width:100%;margin-top:20px;background:transparent;color:#333;border:1px solid var(--border);border-radius:10px;padding:12px 18px;cursor:pointer;font-family:inherit;transition:border-color .2s,color .2s}.new-calculation:hover{border-color:var(--red);color:white}
         .food-grid{display:grid;grid-template-columns:1fr 1fr;gap:25px}.food-card h3,.summary-card h3{font-size:21px;margin-bottom:8px}.food-card>p,.summary-card>p{color:var(--gray);font-size:13px;line-height:1.5;margin-bottom:25px}.food-form{display:grid;grid-template-columns:1fr 150px;gap:15px}.food-form .full{grid-column:1/-1}
-        .food-list{margin-top:25px;border-top:1px solid var(--border);padding-top:20px}.food-item{display:flex;align-items:center;justify-content:space-between;gap:15px;padding:14px 0;border-bottom:1px solid #222}.food-item:last-child{border-bottom:0}.food-name{font-weight:700;font-size:14px}.food-meta{color:var(--gray);font-size:11px;margin-top:5px}.food-cal{font-weight:800;color:var(--red-light);white-space:nowrap}.empty{color:#666;font-size:13px;padding:10px 0}.delete-food{border:0;background:transparent;color:#777;cursor:pointer;font-size:12px;padding:5px}.delete-food:hover{color:var(--red-light)}
-        .totals{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}.total-box{background:#0c0c0c;border:1px solid var(--border);border-radius:14px;padding:18px}.total-box span{display:block;color:var(--gray);font-size:11px;margin-bottom:8px}.total-box strong{font-size:25px}.total-box small{color:var(--gray);font-size:11px}.total-box.main{grid-column:1/-1}.total-box.main strong{font-size:45px}.summary-stack{display:grid;gap:15px}.summary-line{display:flex;justify-content:space-between;align-items:center;gap:15px;padding:15px 0;border-bottom:1px solid var(--border)}.summary-line:last-child{border-bottom:0}.summary-line span{color:var(--gray);font-size:12px}.summary-line strong{font-size:15px}
-        footer{display:flex;justify-content:center;align-items:center;flex-wrap:wrap;gap:8px;color:#555;font-size:11px;text-align:center;margin-top:35px}footer span:first-child{color:var(--red);font-weight:700}
+        .food-list{margin-top:25px;border-top:1px solid var(--border);padding-top:20px}.food-item{display:flex;align-items:center;justify-content:space-between;gap:15px;padding:14px 0;border-bottom:1px solid #e5e5e5}.food-item:last-child{border-bottom:0}.food-name{font-weight:700;font-size:14px}.food-meta{color:var(--gray);font-size:11px;margin-top:5px}.food-cal{font-weight:800;color:#8a6d00;white-space:nowrap}.empty{color:#777;font-size:13px;padding:10px 0}.delete-food{border:0;background:transparent;color:#777;cursor:pointer;font-size:12px;padding:5px}.delete-food:hover{color:var(--red-light)}
+        .totals{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}.total-box{background:#f7f7f7;border:1px solid var(--border);border-radius:14px;padding:18px}.total-box span{display:block;color:var(--gray);font-size:11px;margin-bottom:8px}.total-box strong{font-size:25px}.total-box small{color:var(--gray);font-size:11px}.total-box.main{grid-column:1/-1}.total-box.main strong{font-size:45px}.summary-stack{display:grid;gap:15px}.summary-line{display:flex;justify-content:space-between;align-items:center;gap:15px;padding:15px 0;border-bottom:1px solid var(--border)}.summary-line:last-child{border-bottom:0}.summary-line span{color:var(--gray);font-size:12px}.summary-line strong{font-size:15px}
+        footer{display:flex;justify-content:center;align-items:center;flex-wrap:wrap;gap:8px;color:#666;font-size:11px;text-align:center;margin-top:35px}footer span:first-child{color:var(--red);font-weight:700}
         @media(max-width:800px){.container{width:min(calc(100% - 32px),700px)}.hero{gap:25px}.moon{width:120px;height:120px;min-width:120px}.moon::after{width:120px;height:120px;left:28px}.food-grid{grid-template-columns:1fr}}
         @media(max-width:650px){.container{width:calc(100% - 24px);padding-top:22px}.header{margin-bottom:18px}.navbar{margin-bottom:35px}.hero{display:block;margin-bottom:35px}.hero-text{width:100%}.hero h2{font-size:clamp(40px,12vw,54px);letter-spacing:-2.5px;margin-top:14px}.hero p{font-size:13px;max-width:100%}.moon{display:none}.calculator,.result,.food-card,.summary-card{padding:20px;border-radius:17px}.section-title{gap:12px;margin-bottom:27px}.section-title h3{font-size:18px}.section-title p{font-size:12px}.fields{display:flex;flex-direction:column;align-items:stretch;gap:18px}.arrow{display:none}.field input,.field select{width:100%;height:55px;font-size:14px}.primary-button{min-height:55px;margin-top:22px;padding:12px 15px;font-size:13px}.result-header{flex-direction:column;align-items:flex-start;gap:15px}.result-header h3{font-size:19px}.quality-badge{font-size:10px}.sleep-time{margin:35px 0;gap:5px}.sleep-time span{font-size:clamp(58px,18vw,78px);letter-spacing:-3px}.sleep-time small{font-size:13px;margin-right:8px}.quality{padding:15px;gap:12px}.quality-icon{width:42px;height:42px;min-width:42px}.quality strong{font-size:14px}.new-calculation{width:100%;padding:12px}.food-form{grid-template-columns:1fr}.food-form .full{grid-column:auto}.totals{grid-template-columns:1fr 1fr}.total-box.main{grid-column:1/-1}.total-box.main strong{font-size:38px}footer{padding:0 10px;line-height:1.5}}
         @media(max-width:380px){.container{width:calc(100% - 18px)}.calculator,.result,.food-card,.summary-card{padding:17px}.logo h1{font-size:16px}.logo p{font-size:10px}.hero h2{font-size:39px}.sleep-time span{font-size:54px;letter-spacing:-2px}}
+
+        /* Pegasus: tema preto com detalhes dourados */
+        :root{--black:#050505;--black-light:#101010;--card:#141414;--red:#d4af37;--red-light:#f0cf63;--white:#f5f5f5;--gray:#a3a3a3;--border:#302817}
+        body{background:#050505 !important;color:#f5f5f5 !important}
+        body::before{background:#d4af37 !important;opacity:.06 !important}
+        .logo-icon,.nav-btn.active,.primary-button,.quality-icon{background:#d4af37 !important;color:#111 !important}
+        .logo h1 span,.tag,.number,.arrow,footer span:first-child{color:#d4af37 !important}
+        .navbar{background:#101010 !important;border-color:#302817 !important}
+        .nav-btn{color:#aaa !important}
+        .nav-btn:hover{color:#fff !important}
+        .calculator,.result,.food-card,.summary-card{background:linear-gradient(145deg,#181818,#101010) !important;border-color:#302817 !important}
+        .field input,.field select{background:#171717 !important;color:#f5f5f5 !important;border-color:#302817 !important}
+        .field label{color:#ddd !important}
+        .field input:focus,.field select:focus{border-color:#d4af37 !important}
+        .quality,.total-box{background:#141414 !important;border-color:#302817 !important}
+        .quality-badge{background:rgba(212,175,55,.14) !important;color:#f0cf63 !important;border-color:rgba(212,175,55,.4) !important}
+        .new-calculation{color:#ddd !important;border-color:#302817 !important}
+        .food-item{border-bottom-color:#292929 !important}
+        .food-cal{color:#f0cf63 !important}
+        .empty{color:#888 !important}
+        .moon{background:#d4af37 !important;box-shadow:0 0 70px rgba(212,175,55,.18) !important}
+        .moon::after{background:#050505 !important}
+        footer{color:#888 !important}
+        /* Identidade visual Pegasus: brasão alado e acabamento premium */
+        .header{padding:17px 20px;margin-bottom:25px;border:1px solid rgba(212,175,55,.22);border-radius:18px;background:linear-gradient(110deg,#14120d,#080808 70%);box-shadow:0 12px 35px #0008}
+        .logo{gap:14px}
+        .logo-icon{width:54px;height:54px;min-width:54px;border-radius:15px;background:linear-gradient(145deg,#f4d77e,#b58a22) !important;color:#111 !important;box-shadow:0 5px 22px rgba(212,175,55,.16);padding:8px}
+        .logo-icon svg{width:100%;height:100%;display:block}
+        .logo h1{font-family:Georgia,'Times New Roman',serif;font-size:22px;letter-spacing:3px;text-transform:uppercase;color:#f4f0e5}
+        .logo h1 span{color:#e0b943 !important}
+        .logo p{font-size:10px;letter-spacing:1px;text-transform:uppercase;color:#a7a7a7 !important;margin-top:5px}
+        .navbar{box-shadow:0 10px 30px #0005}
+        .hero{position:relative;padding:clamp(20px,4vw,34px);border:1px solid rgba(212,175,55,.18);border-radius:22px;background:radial-gradient(ellipse at 100% 0%,rgba(212,175,55,.09),transparent 48%),linear-gradient(120deg,#101010,#070707);overflow:hidden}
+        .hero:after{content:"♞";position:absolute;right:4%;top:50%;transform:translateY(-50%);font-family:Georgia,serif;font-size:clamp(100px,17vw,180px);line-height:1;color:rgba(212,175,55,.08);pointer-events:none}
+        .hero-text{position:relative;z-index:1}
+        .tag{letter-spacing:2.5px}
+        .hero h2{font-family:Georgia,'Times New Roman',serif}
+        .calculator,.result,.food-card,.summary-card{box-shadow:0 20px 60px rgba(0,0,0,.28),inset 0 1px rgba(255,255,255,.015) !important}
+        .primary-button{background:linear-gradient(135deg,#f4d77e,#c49a2e) !important;box-shadow:0 8px 24px rgba(212,175,55,.1)}
+        .primary-button:hover{background:linear-gradient(135deg,#ffe9a2,#d4af37) !important}
+        @media(max-width:650px){.header{padding:14px;border-radius:15px}.logo-icon{width:48px;height:48px;min-width:48px}.logo h1{font-size:18px;letter-spacing:2px}.hero:after{right:-2%;opacity:.7}}
+
     </style>
 </head>
 <body>
 <div class="container">
     <header class="header">
         <div class="logo">
-            <div class="logo-icon">Z</div>
-            <div><h1>Sleep<span>Tracker</span></h1><p>Seu sono, seus dados.</p></div>
+            <div class="logo-icon" aria-label="Símbolo Pegasus" role="img">
+                <svg viewBox="0 0 120 100" xmlns="http://www.w3.org/2000/svg" fill="none" aria-hidden="true">
+                    <path d="M17 58C31 51 38 39 40 18C52 29 61 43 60 58C71 48 78 34 77 16C93 32 99 49 91 65C85 78 72 84 61 87C68 77 70 68 67 59C57 71 45 81 29 85C36 75 37 67 34 61C29 65 23 67 17 68" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="M63 60C70 48 80 39 93 37L105 44L97 49L94 61L86 69L82 83L74 83L76 69L68 69M83 37L89 28L96 35L105 33M42 27L27 12M51 40L31 30M57 51L37 47" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+                    <circle cx="94" cy="43" r="2.5" fill="currentColor"/>
+                </svg>
+            </div>
+            <div><h1>Pegasus</h1><p>Seu bem-estar, em equilíbrio.</p></div>
         </div>
     </header>
 
@@ -88,7 +136,7 @@
             <section id="result" class="result hidden">
                 <div class="result-header"><div><span class="tag">RESULTADO</span><h3>Seu período de sono</h3></div><div id="qualityBadge" class="quality-badge">—</div></div>
                 <div class="sleep-time"><span id="hours">00</span><small>h</small><span id="minutes">00</span><small>min</small></div>
-                <div class="quality"><div class="quality-icon" id="qualityIcon">Z</div><div><span>Qualidade do sono</span><strong id="qualityText">—</strong></div></div>
+                <div class="quality"><div class="quality-icon" id="qualityIcon">P</div><div><span>Qualidade do sono</span><strong id="qualityText">—</strong></div></div>
                 <button class="new-calculation" onclick="newCalculation()">Fazer novo cálculo</button>
             </section>
         </section>
@@ -182,7 +230,7 @@
         </section>
     </main>
 
-    <footer><span>SleepTracker</span><span>•</span><span>Monitoramento pessoal do sono e alimentação</span></footer>
+    <footer><span>Pegasus</span><span>•</span><span>Monitoramento pessoal do sono e alimentação</span></footer>
 </div>
 
 <script>
