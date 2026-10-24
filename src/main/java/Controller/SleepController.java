@@ -1,70 +1,93 @@
-package Controller;
 
+package Controller;
 
 import DTO.ExerciceDto;
 import DTO.LifeDto;
 import DTO.SleepDto;
 import Models.Exercice;
-import Models.Refeicao;
+import Repository.Refeicao;
 import Service.ExerciceService;
 import Service.LifeService;
 import Service.SleepService;
-import org.springframework.beans.factory.annotation.Autowired;
+
+import jakarta.servlet.http.HttpSession;
+
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.time.Duration;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.util.List;
 
-
 @RestController
-@RequestMapping("/user")
+@RequestMapping("/api/user")
 @CrossOrigin(origins = "*")
-public class SleepController{
-    @Autowired
-    private SleepService sleepService;
+public class SleepController {
 
-    @Autowired
-    private LifeService lifeService;
+    private final SleepService sleepService;
+    private final LifeService lifeService;
+    private final ExerciceService exerciceService;
 
-    @Autowired
-    private ExerciceService exerciceService;
+    public SleepController(SleepService sleepService, LifeService lifeService, ExerciceService exerciceService) {
+        this.sleepService = sleepService;
+        this.lifeService = lifeService;
+        this.exerciceService = exerciceService;
+    }
 
     @PostMapping("/sleep")
-    public Duration sleep(@RequestBody SleepDto dto){
-        LocalDateTime hourSleep = dto.getHourSleep();
-        LocalDateTime hourWake = dto.getHourWake();
-        Duration calculateDuration = sleepService.calculateSleep(hourSleep, hourWake);
-        return calculateDuration;
+    public Duration sleep(@RequestBody SleepDto dto) {
+        return sleepService.calculateSleep(dto.getHourSleep(), dto.getHourWake());
     }
 
     @PostMapping("/calouries")
-    public String calouries(@RequestBody LifeDto life){
-        String TypeFood = life.getFood();
-        int calouries = life.getCalouries();
-        LocalTime hours = LocalTime.now();
-        Refeicao refeicao = new Refeicao(TypeFood, hours, calouries);
-        lifeService.addRefeicao(refeicao);
-        return "Food: "+TypeFood+"Calouries: "+calouries+"Hours: "+hours;
+    public String calouries(
+            @RequestBody LifeDto life,
+            HttpSession session) {
+
+        Long usuarioId = obterUsuarioId(session);
+
+        String tipoFood = life.getFood();
+        int calorias = life.getCalouries();
+
+        Refeicao salva = lifeService.addRefeicao(tipoFood, calorias, usuarioId
+        );
+
+        return "Refeição registrada: " + salva.getName() + " | Calorias: " + salva.getCalouries();
+    }
+
+    @GetMapping("/calouries/list")
+    public List<Refeicao> listarRefeicoes(HttpSession session) {
+        return lifeService.listarRefeicoes(obterUsuarioId(session));
     }
 
     @GetMapping("/calouries/total")
-    public int totalCalorias() {
-        return lifeService.somarCalorias();
+    public int totalCalorias(HttpSession session) {
+        return lifeService.somarCalorias(obterUsuarioId(session));
     }
 
     @PostMapping("/exercice")
-    public String exercices(@RequestBody ExerciceDto exercice){
-        String TypeExercice = exercice.getExercice();
-        int reapets = exercice.getReapets();
-        Exercice traine = new Exercice(TypeExercice, reapets);
-        exerciceService.addExercice(traine);
-        return "Exercice: "+ TypeExercice+ "Repeats: "+reapets;
-    }
-    @GetMapping("/exercice")
-    public List<Exercice> listExercices() {
-        return exerciceService.listar();
+    public String exercices(@RequestBody ExerciceDto exercice, HttpSession session) {
+
+        Long usuarioId = obterUsuarioId(session);
+
+        exerciceService.addExercice(new Exercice(exercice.getExercice(), exercice.getReapets()), usuarioId);
+
+        return "Exercice: " + exercice.getExercice() + " Repeats: " + exercice.getReapets();
     }
 
+    @GetMapping("/exercice")
+    public List<Exercice> listExercices(HttpSession session) {
+        return exerciceService.listar(obterUsuarioId(session));
+    }
+
+    private Long obterUsuarioId(HttpSession session) {
+
+        Object id = session.getAttribute("usuarioId");
+
+        if (!(id instanceof Long)) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Faça login para acessar seus dados.");
+        }
+
+        return (Long) id;
+    }
 }

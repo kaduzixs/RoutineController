@@ -1,8 +1,9 @@
-
 package Service;
 
 import Models.Exercice;
 import Repository.ExerciceRepository;
+import Repository.User;
+import Repository.UserRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.scheduling.annotation.Scheduled;
 import jakarta.annotation.PostConstruct;
@@ -14,27 +15,45 @@ import java.util.List;
 public class ExerciceService {
 
     private final ExerciceRepository exerciceRepository;
+    private final UserRepository userRepository;
 
-    public ExerciceService(ExerciceRepository exerciceRepository) {
+    public ExerciceService(
+            ExerciceRepository exerciceRepository,
+            UserRepository userRepository) {
         this.exerciceRepository = exerciceRepository;
+        this.userRepository = userRepository;
     }
 
-    public List<Exercice> listar() {
-        return exerciceRepository.findAll().stream().map(ExerciceService::toModel).toList();
+    public List<Exercice> listar(Long usuarioId) {
+        return exerciceRepository.findByUser_Id(usuarioId)
+                .stream()
+                .map(ExerciceService::toModel)
+                .toList();
     }
 
-    public Exercice addExercice(Exercice exercice) {
-        Repository.Exercice entity = new Repository.Exercice(exercice.getExercice(), exercice.getRepeats(), "");
+    public Exercice addExercice(Exercice exercice, Long usuarioId) {
+        User usuario = userRepository.findById(usuarioId)
+                .orElseThrow(() ->
+                        new IllegalArgumentException("Usuário não encontrado"));
 
-        return toModel(exerciceRepository.save(entity));
-    }
+        Repository.Exercice entity = new Repository.Exercice(
+                exercice.getExercice(),
+                exercice.getRepeats(),
+                ""
+        );
 
-    public Exercice salvar(Exercice exercice) {
-        return addExercice(exercice);
+        entity.setUser(usuario);
+
+        Repository.Exercice salvo = exerciceRepository.save(entity);
+
+        return toModel(salvo);
     }
 
     private static Exercice toModel(Repository.Exercice entity) {
-        return new Exercice(entity.getName(),entity.getRepeat());
+        return new Exercice(
+                entity.getName(),
+                entity.getRepeat()
+        );
     }
 
     @PostConstruct

@@ -1,56 +1,42 @@
+
 package Service;
 
-
-import Models.Refeicao;
-import lombok.Getter;
-import lombok.Setter;
-import org.springframework.scheduling.annotation.Scheduled;
+import Repository.Refeicao;
+import Repository.RefeicaoRepository;
+import Repository.User;
+import Repository.UserRepository;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalTime;
 import java.util.List;
-import java.util.ArrayList;
 
 @Service
-@Getter
-@Setter
-public class LifeService{
-    public String food;
-    public int caloria;
+public class LifeService {
 
-    private final List<Refeicao> refeicoes = new ArrayList<>();
+    private final RefeicaoRepository refeicaoRepository;
+    private final UserRepository userRepository;
 
-    void construct(String food, int caloria){
-        this.food = food;
-        this.caloria = caloria;
+    public LifeService(
+            RefeicaoRepository refeicaoRepository,
+            UserRepository userRepository) {
+
+        this.refeicaoRepository = refeicaoRepository;
+        this.userRepository = userRepository;
     }
 
-    public List<Refeicao> listarRefeicoes() {
-        return refeicoes;
+    public Refeicao addRefeicao(String nome, int calorias, Long usuarioId) {
+
+        User usuario = userRepository.findById(usuarioId).orElseThrow(() -> new IllegalArgumentException("Usuário não encontrado"));
+        Refeicao refeicao = new Refeicao(nome, LocalTime.now(), calorias);
+        refeicao.setUser(usuario);
+        return refeicaoRepository.save(refeicao);
     }
 
-    public void addRefeicao(Refeicao refeicao) {
-        refeicoes.add(refeicao);
+    public List<Refeicao> listarRefeicoes(Long usuarioId) {
+        return refeicaoRepository.findByUser_Id(usuarioId);
     }
 
-
-
-    @Scheduled(cron = "0 0 0 * * *")
-    public void resetRefeicoes() {
-        refeicoes.clear();
+    public int somarCalorias(Long usuarioId) {
+        return listarRefeicoes(usuarioId).stream().mapToInt(Refeicao::getCalouries).sum();
     }
-
-
-    public int somarCalorias() {
-        int total = 0;
-        for (Refeicao refeicao : refeicoes) {
-            total += refeicao.getCalouries();
-        }
-
-        return total;
-    }
-
-    
-
-
-
 }

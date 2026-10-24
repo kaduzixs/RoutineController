@@ -47,5 +47,10 @@ public class Exercice {
         }
     }
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
+    private User user;
+
+
 
 }

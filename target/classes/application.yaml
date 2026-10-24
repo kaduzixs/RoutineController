@@ -4,7 +4,7 @@ spring:
     name: many
 
   datasource:
-    url: jdbc:postgresql://aws-0-us-east-1.pooler.supabase.com:6543/routinecontroller
+    url: jdbc:postgresql://aws-0-us-east-1.pooler.supabase.com:6543/routinecontroller?prepareThreshold=0
     username: ${DATABASE_USERNAME}
     password: ${DATABASE_PASSWORD}
     driver-class-name: org.postgresql.Driver
