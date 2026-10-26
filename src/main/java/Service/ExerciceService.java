@@ -18,18 +18,30 @@ public class ExerciceService {
     private final ExerciceRepository exerciceRepository;
     private final UserRepository userRepository;
 
-    public ExerciceService(ExerciceRepository exerciceRepository,UserRepository userRepository) {
+    public ExerciceService(
+            ExerciceRepository exerciceRepository,
+            UserRepository userRepository) {
         this.exerciceRepository = exerciceRepository;
         this.userRepository = userRepository;
     }
 
     public List<Exercice> listar(Long usuarioId) {
-        return exerciceRepository.findByUser_Id(usuarioId).stream().map(ExerciceService::toModel).toList();
+        return exerciceRepository.findByUser_Id(usuarioId)
+                .stream()
+                .map(ExerciceService::toModel)
+                .toList();
+    }
 
     public Exercice addExercice(Exercice exercice, Long usuarioId) {
-        User usuario = userRepository.findById(usuarioId).orElseThrow(() -> new IllegalArgumentException("Usuário não encontrado"));
+        User usuario = userRepository.findById(usuarioId)
+                .orElseThrow(() ->
+                        new IllegalArgumentException("Usuário não encontrado"));
 
-        Repository.Exercice entity = new Repository.Exercice(exercice.getExercice(),exercice.getRepeats(),"");
+        Repository.Exercice entity = new Repository.Exercice(
+                exercice.getExercice(),
+                exercice.getRepeats(),
+                ""
+        );
 
         entity.setUser(usuario);
 
@@ -39,7 +51,10 @@ public class ExerciceService {
     }
 
     private static Exercice toModel(Repository.Exercice entity) {
-        return new Exercice(entity.getName(),entity.getRepeat());
+        return new Exercice(
+                entity.getName(),
+                entity.getRepeat()
+        );
     }
 
     @Scheduled(fixedDelay = 60000)
