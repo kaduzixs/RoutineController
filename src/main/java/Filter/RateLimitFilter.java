@@ -17,6 +17,7 @@ public class RateLimitFilter extends OncePerRequestFilter {
 
     private static final long MINUTO = 60_000L;
 
+    // Limites
     private static final int LIMITE_GERAL = 5;
     private static final int LIMITE_LOGIN = 10;
     private static final int LIMITE_CADASTRO = 3;
@@ -24,14 +25,26 @@ public class RateLimitFilter extends OncePerRequestFilter {
     private static final long TEMPO_LOGIN = 15 * MINUTO;
     private static final long TEMPO_CADASTRO = 60 * MINUTO;
 
-    private final ConcurrentHashMap<String, Bucket> buckets = new ConcurrentHashMap<>();
+    private final ConcurrentHashMap<String, Bucket> buckets =
+            new ConcurrentHashMap<>();
 
     @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)throws ServletException, IOException {
+    protected void doFilterInternal(
+            HttpServletRequest request,
+            HttpServletResponse response,
+            FilterChain filterChain
+    ) throws ServletException, IOException {
 
         String metodo = request.getMethod();
         String rota = request.getRequestURI();
 
+        // Log de diagnóstico
+        System.out.println(
+                "RATE-FILTER | metodo=" + metodo
+                        + " | rota=" + rota
+        );
+
+        // Ignora preflight CORS
         if ("OPTIONS".equalsIgnoreCase(metodo)) {
             filterChain.doFilter(request, response);
             return;
@@ -39,47 +52,95 @@ public class RateLimitFilter extends OncePerRequestFilter {
 
         String ip = request.getRemoteAddr();
 
-        // Login: limite próprio
-        if ("POST".equalsIgnoreCase(metodo)&& rota.equals("/api/user/login")) {
+        // LOGIN: 10 tentativas por 15 minutos
+        if ("POST".equalsIgnoreCase(metodo)
+                && rota.equals("/api/user/login")) {
 
-            if (!permitir( ip + ":LOGIN", LIMITE_LOGIN, TEMPO_LOGIN)) {
-                bloquear(response, "Limite de tentativas de login excedido.");
+            if (!permitir(
+                    ip + ":LOGIN",
+                    LIMITE_LOGIN,
+                    TEMPO_LOGIN
+            )) {
+                bloquear(
+                        response,
+                        "Limite de tentativas de login excedido.",
+                        15 * 60
+                );
                 return;
             }
 
-        // Cadastro: limite próprio
-        } else if ("POST".equalsIgnoreCase(metodo) && rota.equals("/api/user/register")) {
+        // CADASTRO: 3 tentativas por 60 minutos
+        } else if ("POST".equalsIgnoreCase(metodo)
+                && rota.equals("/api/user/register")) {
 
-            if (!permitir(ip + ":CADASTRO", LIMITE_CADASTRO, TEMPO_CADASTRO))  {
-                bloquear(response,"Limite de cadastros excedido.");
+            if (!permitir(
+                    ip + ":CADASTRO",
+                    LIMITE_CADASTRO,
+                    TEMPO_CADASTRO
+            )) {
+                bloquear(
+                        response,
+                        "Limite de cadastros excedido.",
+                        60 * 60
+                );
                 return;
             }
 
-        // Demais rotas: limite geral
+        // DEMAIS ROTAS: 5 requisições por minuto
+        } else {
+            if (!permitir(
+                    ip + ":GERAL",
+                    LIMITE_GERAL,
+                    MINUTO
+            )) {
+                bloquear(
+                        response,
+                        "Limite geral de requisicoes excedido.",
+                        60
+                );
+                return;
+            }
         }
-        else {
-            if (!permitir(ip + ":GERAL", LIMITE_GERAL, MINUTO)){
-                bloquear(response, "Limite geral de requisicoes excedido.");
-                return;
-            }
-        }
+
+        System.out.println(
+                "RATE-FILTER | REQUISICAO LIBERADA"
+        );
 
         filterChain.doFilter(request, response);
     }
 
-    private boolean permitir(String chave, int limite, long intervalo){
-        Bucket bucket = buckets.computeIfAbsent(chave, k -> new Bucket());
+    private boolean permitir(
+            String chave,
+            int limite,
+            long intervalo
+    ) {
+        Bucket bucket = buckets.computeIfAbsent(
+                chave,
+                k -> new Bucket()
+        );
+
         return bucket.consumir(limite, intervalo);
     }
 
-    private void bloquear(HttpServletResponse response, String mensagem)throws IOException {
+    private void bloquear(
+            HttpServletResponse response,
+            String mensagem,
+            int retryAfter
+    ) throws IOException {
+
+        System.out.println("RATE-FILTER | BLOQUEIO 429");
 
         response.setStatus(429);
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
-        response.setHeader("Retry-After", "60");
+        response.setHeader(
+                "Retry-After",
+                String.valueOf(retryAfter)
+        );
 
-        response.getWriter().write("{\"erro\":\"" + mensagem + "\"}");
+        response.getWriter().write(
+                "{\"erro\":\"" + mensagem + "\"}"
+        );
     }
 
     private static class Bucket {
@@ -87,9 +148,13 @@ public class RateLimitFilter extends OncePerRequestFilter {
         private int requisicoes = 0;
         private long inicio = System.currentTimeMillis();
 
-        public synchronized boolean consumir(int limite, long intervalo) {
+        public synchronized boolean consumir(
+                int limite,
+                long intervalo
+        ) {
             long agora = System.currentTimeMillis();
 
+            // Reinicia a janela
             if (agora - inicio >= intervalo) {
                 inicio = agora;
                 requisicoes = 0;
