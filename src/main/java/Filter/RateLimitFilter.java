@@ -133,7 +133,7 @@ public class RateLimitFilter extends OncePerRequestFilter {
                 "RATE-FILTER | BLOQUEIO 429"
         );
 
-        response.setStatus(409);
+        response.setStatus(429);
 
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
