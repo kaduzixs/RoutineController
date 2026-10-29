@@ -39,9 +39,7 @@ public class UserController {
 
         request.changeSessionId();
 
-        session.setAttribute(
-                "usuarioId",
-                usuario.get().getId()
+        session.setAttribute("userId", usuario.get().getId()
         );
 
         return ResponseEntity.ok(
@@ -50,13 +48,9 @@ public class UserController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<String> register(
-            @RequestParam(required = false) String email,
-            @RequestParam(required = false) String password
-    ) {
+    public ResponseEntity<String> register(@RequestParam(required = false) String email, @RequestParam(required = false) String password) {
         try {
-            boolean registrado =
-                    userService.register(email, password);
+            boolean registrado = userService.register(email, password);
 
             if (registrado) {
                 return ResponseEntity.status(HttpStatus.CREATED).body("Usuário cadastrado com sucesso!");
@@ -64,7 +58,8 @@ public class UserController {
 
             return ResponseEntity.status(HttpStatus.CONFLICT).body("Este e-mail já está cadastrado.");
 
-        } catch (IllegalArgumentException ex) {
+        }
+        catch (IllegalArgumentException ex) {
             return ResponseEntity.badRequest().body(ex.getMessage());
         }
     }
