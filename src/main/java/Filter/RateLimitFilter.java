@@ -47,6 +47,8 @@ public class RateLimitFilter extends OncePerRequestFilter {
         // Identificacao da requisicao
         String ip = request.getRemoteAddr();
 
+        System.out.println("RATE-DEBUG | IP=" + i + " | METODO=" + metodo + " | ROTA=" + rota);
+
         String tipo;
         String chave;
         int limite;
@@ -106,6 +108,7 @@ public class RateLimitFilter extends OncePerRequestFilter {
                 + " | limite=" + limite
         );
 
+        System.out.println("RATE-DEBUG | CONTADOR LOGIN | IP=" + ip);
         // Bloqueia se exceder
         if (!permitido) {
             bloquear(
