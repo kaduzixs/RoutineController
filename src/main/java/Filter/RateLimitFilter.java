@@ -17,7 +17,7 @@ public class RateLimitFilter extends OncePerRequestFilter {
 
     private static final long MINUTO = 60_000L;
 
-    // Limites de requisicoes
+    // Limites
     private static final int LIMITE_GERAL = 5;
     private static final int LIMITE_LOGIN = 10;
     private static final int LIMITE_CADASTRO = 3;
@@ -44,18 +44,17 @@ public class RateLimitFilter extends OncePerRequestFilter {
             return;
         }
 
-        // Identificacao da requisicao
+        // Identificação da requisição
         String ip = request.getRemoteAddr();
 
-        System.out.println("RATE-DEBUG | IP=" + i + " | METODO=" + metodo + " | ROTA=" + rota);
-
+        // Não utiliza variável inexistente
         String tipo;
         String chave;
         int limite;
         long intervalo;
         int retryAfter;
 
-        // Login
+        // LOGIN
         if ("POST".equalsIgnoreCase(metodo)
                 && rota.equals("/api/user/login")) {
 
@@ -65,7 +64,7 @@ public class RateLimitFilter extends OncePerRequestFilter {
             intervalo = TEMPO_LOGIN;
             retryAfter = 15 * 60;
 
-        // Cadastro
+        // CADASTRO
         } else if ("POST".equalsIgnoreCase(metodo)
                 && rota.equals("/api/user/register")) {
 
@@ -75,7 +74,7 @@ public class RateLimitFilter extends OncePerRequestFilter {
             intervalo = TEMPO_CADASTRO;
             retryAfter = 60 * 60;
 
-        // Demais requisicoes
+        // DEMAIS REQUISIÇÕES
         } else {
             tipo = "GERAL";
             chave = ip + ":GERAL";
@@ -84,14 +83,13 @@ public class RateLimitFilter extends OncePerRequestFilter {
             retryAfter = 60;
         }
 
-        // Log de entrada sem expor IP ou credenciais
+        // Diagnóstico sem expor IP ou credenciais
         System.out.println(
                 "RATE-FILTER | metodo=" + metodo
                 + " | rota=" + rota
                 + " | tipo=" + tipo
         );
 
-        // Verifica limite
         Bucket bucket = buckets.computeIfAbsent(
                 chave,
                 k -> new Bucket()
@@ -103,13 +101,11 @@ public class RateLimitFilter extends OncePerRequestFilter {
         );
 
         System.out.println(
-                "RATE-DEBUG | tipo=" + tipo
+                "RATE-FILTER | tipo=" + tipo
                 + " | permitido=" + permitido
-                + " | limite=" + limite
         );
 
-        System.out.println("RATE-DEBUG | CONTADOR LOGIN | IP=" + ip);
-        // Bloqueia se exceder
+        // Bloqueio
         if (!permitido) {
             bloquear(
                     response,
@@ -118,10 +114,6 @@ public class RateLimitFilter extends OncePerRequestFilter {
             );
             return;
         }
-
-        System.out.println(
-                "RATE-FILTER | REQUISICAO LIBERADA"
-        );
 
         filterChain.doFilter(request, response);
     }
@@ -137,7 +129,6 @@ public class RateLimitFilter extends OncePerRequestFilter {
         );
 
         response.setStatus(429);
-
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
 
@@ -160,7 +151,6 @@ public class RateLimitFilter extends OncePerRequestFilter {
                 int limite,
                 long intervalo
         ) {
-
             long agora = System.currentTimeMillis();
 
             // Reinicia a janela
@@ -175,7 +165,6 @@ public class RateLimitFilter extends OncePerRequestFilter {
             }
 
             requisicoes++;
-
             return true;
         }
     }
