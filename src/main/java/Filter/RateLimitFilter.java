@@ -17,7 +17,7 @@ public class RateLimitFilter extends OncePerRequestFilter {
 
     private static final long MINUTO = 60_000L;
 
-    // Limites
+    // Limites de requisicoes
     private static final int LIMITE_GERAL = 5;
     private static final int LIMITE_LOGIN = 10;
     private static final int LIMITE_CADASTRO = 3;
@@ -38,68 +38,82 @@ public class RateLimitFilter extends OncePerRequestFilter {
         String metodo = request.getMethod();
         String rota = request.getRequestURI();
 
-        // Log de diagnóstico
-        System.out.println(
-                "RATE-FILTER | metodo=" + metodo
-                        + " | rota=" + rota
-        );
-
         // Ignora preflight CORS
         if ("OPTIONS".equalsIgnoreCase(metodo)) {
             filterChain.doFilter(request, response);
             return;
         }
 
+        // Identificacao da requisicao
         String ip = request.getRemoteAddr();
 
-        // LOGIN: 10 tentativas por 15 minutos
+        String tipo;
+        String chave;
+        int limite;
+        long intervalo;
+        int retryAfter;
+
+        // Login
         if ("POST".equalsIgnoreCase(metodo)
                 && rota.equals("/api/user/login")) {
 
-            if (!permitir(
-                    ip + ":LOGIN",
-                    LIMITE_LOGIN,
-                    TEMPO_LOGIN
-            )) {
-                bloquear(
-                        response,
-                        "Limite de tentativas de login excedido.",
-                        15 * 60
-                );
-                return;
-            }
+            tipo = "LOGIN";
+            chave = ip + ":LOGIN";
+            limite = LIMITE_LOGIN;
+            intervalo = TEMPO_LOGIN;
+            retryAfter = 15 * 60;
 
-        // CADASTRO: 3 tentativas por 60 minutos
+        // Cadastro
         } else if ("POST".equalsIgnoreCase(metodo)
                 && rota.equals("/api/user/register")) {
 
-            if (!permitir(
-                    ip + ":CADASTRO",
-                    LIMITE_CADASTRO,
-                    TEMPO_CADASTRO
-            )) {
-                bloquear(
-                        response,
-                        "Limite de cadastros excedido.",
-                        60 * 60
-                );
-                return;
-            }
+            tipo = "CADASTRO";
+            chave = ip + ":CADASTRO";
+            limite = LIMITE_CADASTRO;
+            intervalo = TEMPO_CADASTRO;
+            retryAfter = 60 * 60;
 
-        // DEMAIS ROTAS: 5 requisições por minuto
+        // Demais requisicoes
         } else {
-            if (!permitir(
-                    ip + ":GERAL",
-                    LIMITE_GERAL,
-                    MINUTO
-            )) {
-                bloquear(
-                        response,
-                        "Limite geral de requisicoes excedido.",
-                        60
-                );
-                return;
-            }
+            tipo = "GERAL";
+            chave = ip + ":GERAL";
+            limite = LIMITE_GERAL;
+            intervalo = MINUTO;
+            retryAfter = 60;
+        }
+
+        // Log de entrada sem expor IP ou credenciais
+        System.out.println(
+                "RATE-FILTER | metodo=" + metodo
+                + " | rota=" + rota
+                + " | tipo=" + tipo
+        );
+
+        // Verifica limite
+        Bucket bucket = buckets.computeIfAbsent(
+                chave,
+                k -> new Bucket()
+        );
+
+        boolean permitido = bucket.consumir(
+                limite,
+                intervalo
+        );
+
+        System.out.println(
+                "RATE-DEBUG | tipo=" + tipo
+                + " | permitido=" + permitido
+                + " | limite=" + limite
+        );
+
+        // Bloqueia se exceder
+        if (!permitido) {
+            bloquear(
+                    response,
+                    "Limite de requisicoes excedido.",
+                    retryAfter
+            );
+            return;
         }
 
         System.out.println(
@@ -109,30 +123,23 @@ public class RateLimitFilter extends OncePerRequestFilter {
         filterChain.doFilter(request, response);
     }
 
-    private boolean permitir(
-            String chave,
-            int limite,
-            long intervalo
-    ) {
-        Bucket bucket = buckets.computeIfAbsent(
-                chave,
-                k -> new Bucket()
-        );
-
-        return bucket.consumir(limite, intervalo);
-    }
-
     private void bloquear(
             HttpServletResponse response,
             String mensagem,
             int retryAfter
     ) throws IOException {
 
-        System.out.println("RATE-FILTER | BLOQUEIO 429");
+        System.out.println(
+                "RATE-FILTER | BLOQUEIO 429"
+        );
 
-        response.setStatus(429);
+        response.setStatus(
+                HttpServletResponse.SC_TOO_MANY_REQUESTS
+        );
+
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
+
         response.setHeader(
                 "Retry-After",
                 String.valueOf(retryAfter)
@@ -152,6 +159,7 @@ public class RateLimitFilter extends OncePerRequestFilter {
                 int limite,
                 long intervalo
         ) {
+
             long agora = System.currentTimeMillis();
 
             // Reinicia a janela
@@ -160,11 +168,13 @@ public class RateLimitFilter extends OncePerRequestFilter {
                 requisicoes = 0;
             }
 
+            // Limite atingido
             if (requisicoes >= limite) {
                 return false;
             }
 
             requisicoes++;
+
             return true;
         }
     }
