@@ -18,7 +18,7 @@
         .logo{display:flex;align-items:center;gap:13px;min-width:0}
         .logo-icon{width:43px;height:43px;min-width:43px;display:flex;justify-content:center;align-items:center;border-radius:12px;background:var(--red);font-size:20px;font-weight:800;box-shadow:0 0 30px rgba(212,175,55,.25)}
         .logo h1{font-size:18px;letter-spacing:-.5px}.logo h1 span{color:var(--red)}.logo p{color:var(--gray);font-size:11px;margin-top:2px}
-        .navbar{display:flex;gap:7px;padding:6px;background:#f7f7f7;border:1px solid var(--border);border-radius:14px;margin-bottom:50px;overflow-x:auto}
+        .navbar{display:flex;gap:7px;padding:6px;background:#f7f7f7;border:1px solid var(--border);border-radius:14px;margin-bottom:24px;overflow-x:auto;align-items:center}
         .nav-btn{border:0;background:transparent;color:#555555;padding:11px 17px;border-radius:9px;font-family:inherit;font-size:12px;font-weight:700;cursor:pointer;white-space:nowrap;transition:.2s}
         .nav-btn:hover{color:#111}.nav-btn.active{background:var(--red);color:#111;box-shadow:0 8px 22px rgba(212,175,55,.22)}
         .page{display:none}.page.active{display:block}
@@ -85,6 +85,40 @@
         .primary-button:hover{background:linear-gradient(135deg,#ffe9a2,#d4af37) !important}
         @media(max-width:650px){.header{padding:14px;border-radius:15px}.logo-icon{width:48px;height:48px;min-width:48px}.logo h1{font-size:18px;letter-spacing:2px}.hero:after{right:-2%;opacity:.7}}
 
+
+        /* Acessibilidade: foco de teclado visível, controles legíveis e menos animações. */
+        :focus-visible{outline:3px solid #56B4E9!important;outline-offset:3px}
+        .accessibility-panel{margin:0 0 24px;padding:16px;border:1px solid #65552a;border-radius:16px;background:#111;color:#f5f5f5}
+        .accessibility-panel>strong{display:block;margin-bottom:12px}
+        .accessibility-controls{display:flex;align-items:end;flex-wrap:wrap;gap:12px}
+        .accessibility-controls>div{display:grid;gap:6px;flex:1;min-width:145px}
+        .accessibility-controls label,.accessibility-controls span{font-size:12px}
+        .accessibility-controls select,.accessibility-controls button{min-height:42px;padding:8px 10px;border:1px solid #777;border-radius:9px;background:#202020;color:#fff;font:inherit}
+        .accessibility-controls button{cursor:pointer}.scale-buttons{display:flex;gap:6px}.scale-buttons button{flex:1}
+        #accessibilityStatus{display:block;margin-top:8px;font-size:12px}
+        body.text-large :is(p,label,input,select,button,.tag,.number,.food-name,.food-meta,.food-cal,.empty,.summary-line,.quality,footer){font-size:1.12em!important}
+        body.text-larger :is(p,label,input,select,button,.tag,.number,.food-name,.food-meta,.food-cal,.empty,.summary-line,.quality,footer){font-size:1.25em!important}
+        /* Tema claro para melhorar a leitura em ambientes iluminados. */
+        body.theme-light{background:#f4f5f7!important;color:#171717!important}
+        body.theme-light .header,body.theme-light .hero,body.theme-light .accessibility-panel,body.theme-light .navbar,body.theme-light .calculator,body.theme-light .result,body.theme-light .food-card,body.theme-light .summary-card{background:#fff!important;color:#171717!important;border-color:#999!important}
+        body.theme-light .logo h1,body.theme-light .hero h2,body.theme-light .section-title h3,body.theme-light .result-header h3,body.theme-light .sleep-time span,body.theme-light .total-box strong,body.theme-light .summary-line strong{color:#171717!important}
+        body.theme-light .logo p,body.theme-light .hero p,body.theme-light .section-title p,body.theme-light .food-card>p,body.theme-light .summary-card>p,body.theme-light .field label,body.theme-light footer{color:#333!important}
+        body.theme-light .field input,body.theme-light .field select,body.theme-light .quality,body.theme-light .total-box,body.theme-light .accessibility-controls select,body.theme-light .accessibility-controls button{background:#f2f2f2!important;color:#111!important;border-color:#777!important}
+        body.theme-light .nav-btn{color:#222!important}body.theme-light .new-calculation{color:#222!important}
+        /* Tema noturno: superfícies azul-marinho e brilho reduzido. */
+        body.theme-night{background:#020611!important;color:#e8efff!important}
+        body.theme-night .header,body.theme-night .hero,body.theme-night .accessibility-panel,body.theme-night .navbar,body.theme-night .calculator,body.theme-night .result,body.theme-night .food-card,body.theme-night .summary-card{background:#070d1b!important;color:#e8efff!important;border-color:#243754!important}
+        body.theme-night .field input,body.theme-night .field select,body.theme-night .quality,body.theme-night .total-box,body.theme-night .accessibility-controls select,body.theme-night .accessibility-controls button{background:#0c1628!important;color:#f3f6ff!important;border-color:#456080!important}
+        /* Paletas de acento adaptadas; filtros não substituem testes de acessibilidade. */
+        body.vision-protanopia{--red:#0072B2!important;--red-light:#56B4E9!important}
+        body.vision-tritanopia{--red:#D55E00!important;--red-light:#E69F00!important}
+        body.vision-high-contrast{--red:#FFFF00!important;--red-light:#FFFF66!important;--border:#fff!important}
+        body.vision-protanopia .logo-icon,body.vision-protanopia .nav-btn.active,body.vision-protanopia .primary-button,body.vision-protanopia .quality-icon{background:#0072B2!important;color:#fff!important}
+        body.vision-tritanopia .logo-icon,body.vision-tritanopia .nav-btn.active,body.vision-tritanopia .primary-button,body.vision-tritanopia .quality-icon{background:#D55E00!important;color:#fff!important}
+        body.vision-high-contrast .primary-button,body.vision-high-contrast .nav-btn.active{background:#ff0!important;color:#000!important}
+        @media(prefers-reduced-motion:reduce){*,*::before,*::after{scroll-behavior:auto!important;animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}}
+        @media(max-width:650px){.accessibility-controls{align-items:stretch}.accessibility-controls>div{min-width:100%}.accessibility-controls>button{width:100%}}
+
     </style>
 </head>
 <body>
@@ -102,11 +136,26 @@
         </div>
     </header>
 
+
+    <!-- Acessibilidade: o menu inicia fechado e é aberto pelo botão da barra de navegação. -->
+    <section class="accessibility-panel" id="accessibilityPanel" aria-label="Configurações de acessibilidade" hidden>
+      <strong>Acessibilidade</strong>
+      <div class="accessibility-controls">
+        <div><label for="themeSelect">Aparência</label><select id="themeSelect"><option value="dark">Escura</option><option value="light">Clara</option><option value="night">Noturna</option></select></div>
+        <div><label for="visionSelect">Paleta de cores</label><select id="visionSelect"><option value="default">Padrão</option><option value="protanopia">Protanopia / deuteranopia</option><option value="tritanopia">Tritanopia</option><option value="high-contrast">Alto contraste</option></select></div>
+        <div><span>Tamanho do texto</span><div class="scale-buttons"><button type="button" id="textSmaller" aria-label="Diminuir texto">A−</button><button type="button" id="textLarger" aria-label="Aumentar texto">A+</button></div></div>
+        <button type="button" id="resetAccessibility">Restaurar</button>
+      </div>
+      <span id="accessibilityStatus" role="status" aria-live="polite"></span>
+    </section>
+
     <nav class="navbar" aria-label="Navegação principal">
         <button class="nav-btn active" data-page="sleepPage">Sono</button>
         <button class="nav-btn" data-page="foodPage">Alimentação</button>
         <button class="nav-btn" data-page="exercisePage">Exercícios</button>
         <button class="nav-btn" data-page="summaryPage">Resumo</button>
+        <!-- Botão da navbar que abre/fecha as opções de acessibilidade. -->
+        <button class="nav-btn accessibility-nav-btn" type="button" id="toggleAccessibility" aria-controls="accessibilityPanel" aria-expanded="false">Acessibilidade ⚙</button>
     </nav>
 
     <main>
@@ -117,7 +166,7 @@
                     <h2>Descubra quanto <span>você dorme.</span></h2>
                     <p>Informe seus horários de sono e descubra automaticamente quanto tempo você dormiu.</p>
                 </div>
-                <div class="moon"></div>
+                <div class="moon" aria-hidden="true"></div>
             </section>
 
             <section class="calculator">
@@ -130,14 +179,14 @@
                     </div>
                     <button type="submit" class="primary-button" id="calculateButton"><span>Calcular meu sono</span><strong>→</strong></button>
                 </form>
-                <div id="error" class="error"></div>
+                <div id="error" class="error" role="alert" aria-live="assertive"></div>
             </section>
 
             <section id="result" class="result hidden">
                 <div class="result-header"><div><span class="tag">RESULTADO</span><h3>Seu período de sono</h3></div><div id="qualityBadge" class="quality-badge">—</div></div>
                 <div class="sleep-time"><span id="hours">00</span><small>h</small><span id="minutes">00</span><small>min</small></div>
                 <div class="quality"><div class="quality-icon" id="qualityIcon">P</div><div><span>Qualidade do sono</span><strong id="qualityText">—</strong></div></div>
-                <button class="new-calculation" onclick="newCalculation()">Fazer novo cálculo</button>
+                <button type="button" class="new-calculation" id="newCalculationButton">Fazer novo cálculo</button>
             </section>
         </section>
 
@@ -148,24 +197,24 @@
                     <h2>Registre suas <span>refeições.</span></h2>
                     <p>Adicione os alimentos consumidos e acompanhe os valores nutricionais registrados no dia.</p>
                 </div>
-                <div class="moon"></div>
+                <div class="moon" aria-hidden="true"></div>
             </section>
 
             <div class="food-grid">
                 <section class="food-card">
                     <div class="section-title"><span class="number">01</span><div><h3>Adicionar alimento</h3><p>Registre um alimento e seus valores nutricionais.</p></div></div>
                     <form id="foodForm">
-                        <div class="field full"><label for="foodName"><span class="dot red"></span>Alimento</label><input id="foodName" type="text" placeholder="Ex.: Arroz" required></div>
+                        <div class="field full"><label for="foodName"><span class="dot red"></span>Alimento</label><input id="foodName" name="foodName" type="text" maxlength="100" autocomplete="off" placeholder="Ex.: Arroz" required></div>
                         <div class="field"><label for="foodCalories"><span class="dot red"></span>Calorias (kcal)</label><input id="foodCalories" type="number" min="0" step="1" placeholder="Ex.: 200" required></div>
-                        <div class="field"><label for="foodQuantity"><span class="dot white"></span>Quantidade</label><input id="foodQuantity" type="text" placeholder="Ex.: 1 porção"></div>
+                        <div class="field"><label for="foodQuantity"><span class="dot white"></span>Quantidade</label><input id="foodQuantity" name="foodQuantity" type="text" maxlength="60" autocomplete="off" placeholder="Ex.: 1 porção"></div>
                         <button type="submit" class="primary-button full"><span>Adicionar alimento</span><strong>+</strong></button>
                     </form>
-                    <div id="foodError" class="error"></div>
+                    <div id="foodError" class="error" role="alert" aria-live="assertive"></div>
                 </section>
 
                 <section class="food-card">
                     <div class="section-title"><span class="number">02</span><div><h3>Alimentos registrados</h3><p>Os registros são mantidos pelo serviço de alimentação do projeto.</p></div></div>
-                    <div id="foodList" class="food-list"><div class="empty">Nenhum alimento registrado ainda.</div></div>
+                    <div id="foodList" class="food-list" aria-live="polite"><div class="empty">Nenhum alimento registrado ainda.</div></div>
                 </section>
             </div>
 
@@ -183,23 +232,23 @@
                     <h2>Registre seus <span>exercícios.</span></h2>
                     <p>Adicione os exercícios realizados e acompanhe suas repetições, sem cálculo de total.</p>
                 </div>
-                <div class="moon"></div>
+                <div class="moon" aria-hidden="true"></div>
             </section>
 
             <div class="food-grid">
                 <section class="food-card">
                     <div class="section-title"><span class="number">01</span><div><h3>Adicionar exercício</h3><p>Informe o exercício e a quantidade de repetições.</p></div></div>
                     <form id="exerciseForm">
-                        <div class="field full"><label for="exerciseName"><span class="dot red"></span>Exercício</label><input id="exerciseName" type="text" placeholder="Ex.: Agachamento" required></div>
+                        <div class="field full"><label for="exerciseName"><span class="dot red"></span>Exercício</label><input id="exerciseName" name="exerciseName" type="text" maxlength="100" autocomplete="off" placeholder="Ex.: Agachamento" required></div>
                         <div class="field full"><label for="exerciseRepeats"><span class="dot white"></span>Repetições</label><input id="exerciseRepeats" type="number" min="1" step="1" placeholder="Ex.: 12" required></div>
                         <button type="submit" class="primary-button full"><span>Adicionar exercício</span><strong>+</strong></button>
                     </form>
-                    <div id="exerciseError" class="error"></div>
+                    <div id="exerciseError" class="error" role="alert" aria-live="assertive"></div>
                 </section>
 
                 <section class="food-card">
                     <div class="section-title"><span class="number">02</span><div><h3>Exercícios registrados</h3><p>Veja os exercícios adicionados ao seu treino.</p></div></div>
-                    <div id="exerciseList" class="food-list"><div class="empty">Nenhum exercício registrado ainda.</div></div>
+                    <div id="exerciseList" class="food-list" aria-live="polite"><div class="empty">Nenhum exercício registrado ainda.</div></div>
                 </section>
             </div>
         </section>
@@ -211,7 +260,7 @@
                     <h2>Seu dia em <span>um só lugar.</span></h2>
                     <p>Veja o resultado do sono e o total de alimentação registrado nas outras áreas.</p>
                 </div>
-                <div class="moon"></div>
+                <div class="moon" aria-hidden="true"></div>
             </section>
             <div class="summary-stack">
                 <section class="summary-card">
@@ -234,6 +283,7 @@
 </div>
 
 <script>
+    // Segurança: validação no navegador complementa obrigatoriamente a validação do backend.
     const form = document.getElementById("sleepForm");
     const result = document.getElementById("result");
     const error = document.getElementById("error");
@@ -258,6 +308,53 @@
         });
     });
 
+    // Acessibilidade: preferências compartilhadas entre a tela principal e o login.
+    const a11yDefaults = {theme:"dark", vision:"default", size:"normal"};
+    function readA11y() {
+        try {
+            const s = JSON.parse(localStorage.getItem("pegasusAccessibility") || "{}");
+            return {theme:["dark","light","night"].includes(s.theme)?s.theme:"dark",
+                vision:["default","protanopia","tritanopia","high-contrast"].includes(s.vision)?s.vision:"default",
+                size:["normal","large","larger"].includes(s.size)?s.size:(["normal","large","larger"].includes(s.textSize)?s.textSize:"normal")};
+        } catch (_) { return {...a11yDefaults}; }
+    }
+    let a11y = readA11y();
+    function applyA11y(announce=false) {
+        document.body.classList.remove("theme-light","theme-night","vision-protanopia","vision-tritanopia","vision-high-contrast","text-large","text-larger");
+        if(a11y.theme==="light") document.body.classList.add("theme-light");
+        if(a11y.theme==="night") document.body.classList.add("theme-night");
+        if(a11y.vision!=="default") document.body.classList.add("vision-"+a11y.vision);
+        if(a11y.size==="large") document.body.classList.add("text-large");
+        if(a11y.size==="larger") document.body.classList.add("text-larger");
+        document.getElementById("themeSelect").value=a11y.theme;
+        document.getElementById("visionSelect").value=a11y.vision;
+        try { localStorage.setItem("pegasusAccessibility",JSON.stringify({theme:a11y.theme,vision:a11y.vision,textSize:a11y.size})); } catch (_) { /* O site continua funcionando sem armazenamento local. */ }
+        if(announce) document.getElementById("accessibilityStatus").textContent="Preferências de acessibilidade atualizadas.";
+    }
+    // A barra de navegação controla a abertura do menu de acessibilidade.
+    const accessibilityPanel = document.getElementById("accessibilityPanel");
+    const toggleAccessibility = document.getElementById("toggleAccessibility");
+    toggleAccessibility.addEventListener("click", () => {
+        const willOpen = accessibilityPanel.hidden;
+        accessibilityPanel.hidden = !willOpen;
+        toggleAccessibility.setAttribute("aria-expanded", String(willOpen));
+        if (willOpen) accessibilityPanel.querySelector("select, button")?.focus();
+    });
+    document.getElementById("themeSelect").addEventListener("change",e=>{a11y.theme=e.target.value;applyA11y(true);});
+    document.getElementById("visionSelect").addEventListener("change",e=>{a11y.vision=e.target.value;applyA11y(true);});
+    document.getElementById("textSmaller").addEventListener("click",()=>{a11y.size=a11y.size==="larger"?"large":"normal";applyA11y(true);});
+    document.getElementById("textLarger").addEventListener("click",()=>{a11y.size=a11y.size==="normal"?"large":"larger";applyA11y(true);});
+    document.getElementById("resetAccessibility").addEventListener("click",()=>{a11y={...a11yDefaults};applyA11y(true);});
+    document.getElementById("newCalculationButton").addEventListener("click",newCalculation);
+    // Segurança: delegação de evento e verificação do índice antes de remover item.
+    document.getElementById("foodList").addEventListener("click",e=>{
+        const button=e.target.closest("button[data-remove-food]");
+        if(!button)return;
+        const index=Number(button.dataset.removeFood);
+        if(Number.isInteger(index)&&index>=0&&index<foods.length)removeLocalFood(index);
+    });
+    applyA11y();
+
     form.addEventListener("submit", async function(event) {
         event.preventDefault(); error.textContent = ""; result.classList.add("hidden");
         const hourSleep = document.getElementById("hourSleep").value;
@@ -269,9 +366,12 @@
         const hours = Math.floor(totalMinutes/60), minutes = totalMinutes%60;
         showResult(hours, minutes);
         try {
-            const response = await fetch("/user/sleep", {method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({hourSleep,hourWake})});
-            if (!response.ok) console.log("Backend retornou:", response.status, await response.text());
-        } catch (err) { console.log("Erro ao enviar para o backend:", err); }
+            const response = await fetch("/user/sleep", {method:"POST",credentials:"same-origin",headers:{"Content-Type":"application/json"},body:JSON.stringify({hourSleep,hourWake})});
+            if (!response.ok) error.textContent = "O cálculo foi feito, mas não foi possível sincronizá-lo com o servidor.";
+        } catch (_) {
+            // O resultado local continua disponível sem expor detalhes técnicos.
+            error.textContent = "O cálculo foi feito, mas não foi possível conectar ao servidor.";
+        }
     });
 
     function showResult(hours, minutes) {
@@ -292,9 +392,9 @@
         const quantity = document.getElementById("foodQuantity").value.trim();
         const foodError = document.getElementById("foodError");
         foodError.textContent = "";
-        if (!name || !Number.isFinite(calouries) || calouries < 0) { foodError.textContent = "Informe o alimento e uma quantidade válida de calorias."; return; }
+        if (!name || name.length>100 || !Number.isInteger(calouries) || calouries < 0 || calouries>100000) { foodError.textContent = "Informe o alimento e uma quantidade válida de calorias."; return; }
         try {
-            const response = await fetch("/user/calouries", {method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({food:name,calouries:Math.round(calouries)})});
+            const response = await fetch("/user/calouries", {method:"POST",credentials:"same-origin",headers:{"Content-Type":"application/json"},body:JSON.stringify({food:name,calouries:Math.round(calouries)})});
             if (!response.ok) throw new Error("Falha ao registrar alimento");
             document.getElementById("foodForm").reset();
             await loadFoods();
@@ -307,7 +407,7 @@
 
     async function loadFoods() {
         try {
-            const response = await fetch("/user/calouries/list");
+            const response = await fetch("/user/calouries/list",{credentials:"same-origin",headers:{"Accept":"application/json"}});
             if (!response.ok) throw new Error("endpoint indisponível");
             foods = await response.json();
             renderFoods();
@@ -323,7 +423,7 @@
         list.innerHTML = foods.map((food,index) => `
             <div class="food-item">
                 <div><div class="food-name">${escapeHtml(food.name || "Alimento")}</div><div class="food-meta">${food.hour || ""}${food.quantity ? " • " + escapeHtml(food.quantity) : ""}</div></div>
-                <div style="display:flex;align-items:center;gap:10px"><span class="food-cal">${Number(food.calouries)||0} kcal</span><button class="delete-food" onclick="removeLocalFood(${index})" title="Remover da visualização">✕</button></div>
+                <div style="display:flex;align-items:center;gap:10px"><span class="food-cal">${Number(food.calouries)||0} kcal</span><button type="button" class="delete-food" data-remove-food="${index}" aria-label="Remover alimento da visualização" title="Remover da visualização">Remover</button></div>
             </div>`).join("");
         document.getElementById("foodTotal").textContent = foods.reduce((sum,food)=>sum+(Number(food.calouries)||0),0);
     }
@@ -343,7 +443,7 @@
         const exerciseError = document.getElementById("exerciseError");
         exerciseError.textContent = "";
 
-        if (!name || !Number.isInteger(repeats) || repeats < 1) {
+        if (!name || name.length>100 || !Number.isInteger(repeats) || repeats < 1 || repeats>100000) {
             exerciseError.textContent = "Informe o exercício e uma quantidade válida de repetições.";
             return;
         }
@@ -351,6 +451,7 @@
         try {
             const response = await fetch("/user/exercice", {
                 method: "POST",
+                credentials: "same-origin",
                 headers: {"Content-Type": "application/json"},
                 body: JSON.stringify({exercice: name, reapets: repeats})
             });
@@ -367,7 +468,7 @@
 
     async function loadExercises() {
         try {
-            const response = await fetch("/user/exercice");
+            const response = await fetch("/user/exercice",{credentials:"same-origin",headers:{"Accept":"application/json"}});
             if (!response.ok) throw new Error("endpoint indisponível");
             exercises = await response.json();
             if (!Array.isArray(exercises)) exercises = [];
