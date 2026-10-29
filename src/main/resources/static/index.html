@@ -148,6 +148,31 @@
         #message{line-height:1.5}
         @media(max-width:480px){.container{padding:28px 22px}.brand-mark{width:80px;height:70px}h1{font-size:28px;letter-spacing:6px}.subtitle{font-size:10px;letter-spacing:1.5px}}
 
+
+        /* Acessibilidade: foco visível, temas e opções responsivas no login. */
+        :focus-visible{outline:3px solid #56B4E9!important;outline-offset:3px}
+        .login-accessibility{margin:0 0 20px;padding:12px;border:1px solid #65552a;border-radius:12px;color:#eee;background:#0b0b0b;font-size:13px}
+        .login-accessibility strong{display:block;margin-bottom:8px}.login-access-row{display:flex;align-items:center;flex-wrap:wrap;gap:6px;margin-bottom:8px}
+        .login-accessibility button,.login-accessibility select{min-height:38px;padding:7px 9px;border:1px solid #777;border-radius:7px;background:#202020;color:#fff}
+        .login-accessibility button{cursor:pointer}.login-accessibility label{margin:0;font-size:12px}.login-accessibility select{max-width:100%}
+        /* Navbar compacta do login: o botão abre o menu de acessibilidade. */
+        .login-navbar{display:flex;justify-content:center;margin:0 0 12px}
+        .login-nav-button{min-height:40px;padding:9px 16px;border:1px solid #65552a;border-radius:9px;background:#17130a;color:#f4d77e;font:inherit;font-weight:700;cursor:pointer}
+        .login-nav-button:hover{background:#2a220f}
+        #loginAccessStatus{display:block;margin-top:6px;font-size:12px}
+        body.login-light{background:#f4f5f7!important;color:#171717!important}
+        body.login-light .container{background:#fff!important;color:#171717!important;border-color:#999!important}
+        body.login-light h1,body.login-light label{color:#171717!important}body.login-light .subtitle{color:#444!important}
+        body.login-light input{background:#fff!important;color:#111!important;border-color:#888!important}
+        body.login-light .login-accessibility{background:#f4f4f4!important;color:#171717!important;border-color:#888!important}
+        body.login-light .login-accessibility button,body.login-light .login-accessibility select{background:#fff!important;color:#111!important}
+        body.login-night{background:#020611!important}body.login-night .container,body.login-night .login-accessibility{background:#070d1b!important;border-color:#456080!important}
+        body.login-night input,body.login-night .login-accessibility button,body.login-night .login-accessibility select{background:#0c1628!important;color:#f3f6ff!important;border-color:#456080!important}
+        body.login-protanopia .submit{background:#0072B2!important;color:#fff!important}body.login-tritanopia .submit{background:#D55E00!important;color:#fff!important}
+        body.login-high-contrast .submit{background:#ff0!important;color:#000!important}
+        body.login-text-large{font-size:1.12rem}body.login-text-larger{font-size:1.25rem}
+        @media(prefers-reduced-motion:reduce){*,*::before,*::after{transition-duration:.01ms!important;animation-duration:.01ms!important;scroll-behavior:auto!important}}
+
     </style>
 </head>
 
@@ -166,25 +191,38 @@
 
     <div class="tabs">
         <button type="button" id="loginTab" class="active"
-                onclick="showForm('login')">Login</button>
+                data-auth-mode="login">Login</button>
 
         <button type="button" id="registerTab"
-                onclick="showForm('register')">Cadastro</button>
+                data-auth-mode="register">Cadastro</button>
     </div>
+
+    <!-- Barra de navegação com acesso ao menu de acessibilidade. -->
+    <nav class="login-navbar" aria-label="Navegação de ferramentas">
+      <button type="button" class="login-nav-button" id="toggleLoginAccessibility" aria-controls="loginAccessibilityPanel" aria-expanded="false">Acessibilidade ⚙</button>
+    </nav>
+
+    <!-- Acessibilidade: menu fechado inicialmente; pode ser aberto pela navbar. -->
+    <section class="login-accessibility" id="loginAccessibilityPanel" aria-label="Configurações de acessibilidade" hidden>
+      <strong>Acessibilidade</strong>
+      <div class="login-access-row"><button type="button" id="loginTextSmaller" aria-label="Diminuir texto">A−</button><button type="button" id="loginTextLarger" aria-label="Aumentar texto">A+</button><label for="loginTheme">Tema</label><select id="loginTheme"><option value="dark">Escuro</option><option value="light">Claro</option><option value="night">Noturno</option></select></div>
+      <label for="loginVision">Paleta de cores</label><select id="loginVision"><option value="default">Padrão</option><option value="protanopia">Protanopia / deuteranopia</option><option value="tritanopia">Tritanopia</option><option value="high-contrast">Alto contraste</option></select>
+      <span id="loginAccessStatus" role="status" aria-live="polite"></span>
+    </section>
 
     <form id="authForm">
         <label for="email">E-mail</label>
-        <input id="email" type="email"
+        <input id="email" name="email" type="email" autocomplete="email" maxlength="254"
                placeholder="seu@email.com" required>
 
         <label for="password">Senha</label>
-        <input id="password" type="password"
+        <input id="password" name="password" type="password" autocomplete="current-password" maxlength="128"
                placeholder="Digite sua senha"
                minlength="6" required>
 
         <div id="confirmGroup" class="hidden">
             <label for="confirmPassword">Confirmar senha</label>
-            <input id="confirmPassword" type="password"
+            <input id="confirmPassword" name="confirmPassword" type="password" autocomplete="new-password" maxlength="128"
                    placeholder="Digite a senha novamente"
                    minlength="6">
         </div>
@@ -194,7 +232,7 @@
         </button>
     </form>
 
-    <div id="message" role="status"></div>
+    <div id="message" role="status" aria-live="polite" aria-atomic="true"></div>
 </div>
 
 <script>
@@ -208,6 +246,8 @@
     const submitButton = document.getElementById("submitButton");
 
     function showForm(selectedMode) {
+        // Segurança: só permite os dois modos previstos pela interface.
+        if (selectedMode !== "login" && selectedMode !== "register") return;
         mode = selectedMode;
 
         document.getElementById("loginTab")
@@ -227,11 +267,54 @@
         message.style.color = "#aaa";
     }
 
+    // Segurança: os botões usam listeners em vez de handlers inline.
+    document.querySelectorAll("[data-auth-mode]").forEach(button => button.addEventListener("click", () => showForm(button.dataset.authMode)));
+    // Acessibilidade: configurações sincronizadas com a página principal.
+    const loginDefaults={theme:"dark",vision:"default",size:"normal"};
+    function readLoginA11y(){
+      try{const s=JSON.parse(localStorage.getItem("pegasusAccessibility")||"{}");return{
+        theme:["dark","light","night"].includes(s.theme)?s.theme:"dark",
+        vision:["default","protanopia","tritanopia","high-contrast"].includes(s.vision)?s.vision:"default",
+        size:["normal","large","larger"].includes(s.textSize)?s.textSize:"normal"};}catch(_){return {...loginDefaults};}
+    }
+    let loginA11y=readLoginA11y();
+    function applyLoginA11y(announce=false){
+      document.body.classList.remove("login-light","login-night","login-protanopia","login-tritanopia","login-high-contrast","login-text-large","login-text-larger");
+      if(loginA11y.theme==="light")document.body.classList.add("login-light");
+      if(loginA11y.theme==="night")document.body.classList.add("login-night");
+      if(loginA11y.vision!=="default")document.body.classList.add("login-"+loginA11y.vision);
+      if(loginA11y.size==="large")document.body.classList.add("login-text-large");
+      if(loginA11y.size==="larger")document.body.classList.add("login-text-larger");
+      document.getElementById("loginTheme").value=loginA11y.theme;document.getElementById("loginVision").value=loginA11y.vision;
+      try{localStorage.setItem("pegasusAccessibility",JSON.stringify({theme:loginA11y.theme,vision:loginA11y.vision,textSize:loginA11y.size}));}catch(_){/* Armazenamento local é opcional. */}
+      if(announce)document.getElementById("loginAccessStatus").textContent="Preferências atualizadas.";
+    }
+    // Controla abrir/fechar do menu sem handlers inline.
+    const loginAccessibilityPanel = document.getElementById("loginAccessibilityPanel");
+    const toggleLoginAccessibility = document.getElementById("toggleLoginAccessibility");
+    toggleLoginAccessibility.addEventListener("click", () => {
+      const willOpen = loginAccessibilityPanel.hidden;
+      loginAccessibilityPanel.hidden = !willOpen;
+      toggleLoginAccessibility.setAttribute("aria-expanded", String(willOpen));
+      if (willOpen) loginAccessibilityPanel.querySelector("button, select")?.focus();
+    });
+    document.getElementById("loginTheme").addEventListener("change",e=>{loginA11y.theme=e.target.value;applyLoginA11y(true);});
+    document.getElementById("loginVision").addEventListener("change",e=>{loginA11y.vision=e.target.value;applyLoginA11y(true);});
+    document.getElementById("loginTextSmaller").addEventListener("click",()=>{loginA11y.size=loginA11y.size==="larger"?"large":"normal";applyLoginA11y(true);});
+    document.getElementById("loginTextLarger").addEventListener("click",()=>{loginA11y.size=loginA11y.size==="normal"?"large":"larger";applyLoginA11y(true);});
+    applyLoginA11y();
+
     form.addEventListener("submit", async function(event) {
         event.preventDefault();
 
         const email = document.getElementById("email").value.trim();
         const senha = password.value;
+        // Validação client-side para usabilidade; nunca substitui a validação no servidor.
+        if (email.length > 254 || senha.length < 6 || senha.length > 128) {
+            message.style.color = "#ff6b6b";
+            message.textContent = "Confira o e-mail e a senha informados.";
+            return;
+        }
 
         if (mode === "register" && senha !== confirmPassword.value) {
             message.style.color = "#ff6b6b";
@@ -261,11 +344,11 @@
                 })
             });
 
-            const result = await response.text();
-
-            if (!response.ok) {
-                throw new Error(result || "Não foi possível realizar a operação.");
-            }
+            // Não exibe o corpo bruto da resposta, que pode revelar detalhes internos.
+            if (!response.ok) throw new Error(mode === "login"
+                ? "Não foi possível entrar. Confira seus dados e tente novamente."
+                : "Não foi possível concluir o cadastro. Confira os dados e tente novamente.");
+            await response.text();
 
             if (mode === "register") {
                 message.style.color = "#4ade80";
@@ -285,10 +368,9 @@
                 window.location.assign("/sleepTracker.html");
             }
 
-        } catch (error) {
+        } catch (_) {
             message.style.color = "#ff6b6b";
-            message.textContent = error.message ||
-                "Erro de conexão com o servidor.";
+            message.textContent = "Não foi possível conectar ou concluir a operação. Tente novamente.";
         } finally {
             submitButton.disabled = false;
         }
