@@ -82,7 +82,7 @@ public class SleepController {
 
     private Long obterUsuarioId(HttpSession session) {
 
-        Object id = session.getAttribute("usuarioId");
+        Object id = session.getAttribute("userId");
 
         if (!(id instanceof Long)) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Faça login para acessar seus dados.");
